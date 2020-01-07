@@ -3,3 +3,8 @@
 *.iml
 *.ips
 *.ipr
+.classpath
+.project
+build/
+bin/
+.idea/
