@@ -1,3 +1,3 @@
 cd ../
 chmod a+x gradlew
-./gradlew build
+bash gradlew build
