@@ -3,12 +3,3 @@
 *.iml
 *.ips
 *.ipr
-bin/
-build/
-gradle/
-*.classpath
-*.project
-.settings/
-.idea/
-*.lock
-*.bin
