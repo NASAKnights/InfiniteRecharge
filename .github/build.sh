@@ -1,3 +1,2 @@
-cd ../
-chmod a+x gradlew
-bash gradlew build
+chmod a+x ../gradlew
+../gradlew build
