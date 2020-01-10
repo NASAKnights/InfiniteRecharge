@@ -1,4 +1,4 @@
-package xyz.nasaknights.infiniterecharge.util.controller;
+package xyz.nasaknights.infiniterecharge.util.controllers;
 
 public enum LogitechControllerMappings {
 
