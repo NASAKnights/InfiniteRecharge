@@ -1,4 +1,5 @@
 package xyz.nasaknights.infiniterecharge.util;
 
-public strictfp class MathUtils {
+public strictfp class MathUtils
+{
 }

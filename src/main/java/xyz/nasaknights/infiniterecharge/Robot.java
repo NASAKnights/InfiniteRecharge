@@ -2,52 +2,67 @@ package xyz.nasaknights.infiniterecharge;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import xyz.nasaknights.infiniterecharge.util.driver.DriverProfile;
 
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot
+{
 
     private RobotContainer robotContainer;
 
+    private DriverProfile driverProfile = DriverProfile.kAutonomous;
+
     @Override
-    public void robotInit() {
+    public void robotInit()
+    {
         robotContainer = new RobotContainer();
+        RobotContainer.setProfile(driverProfile);
     }
 
     @Override
-    public void robotPeriodic() {
+    public void robotPeriodic()
+    {
         CommandScheduler.getInstance().run();
     }
 
     @Override
-    public void disabledInit() {
+    public void disabledInit()
+    {
     }
 
     @Override
-    public void disabledPeriodic() {
+    public void disabledPeriodic()
+    {
     }
 
     @Override
-    public void autonomousInit() {
+    public void autonomousInit()
+    {
     }
 
     @Override
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic()
+    {
     }
 
     @Override
-    public void teleopInit() {
+    public void teleopInit()
+    {
     }
 
     @Override
-    public void teleopPeriodic() {
+    public void teleopPeriodic()
+    {
     }
 
     @Override
-    public void testInit() {
+    public void testInit()
+    {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
     }
 
     @Override
-    public void testPeriodic() {
+    public void testPeriodic()
+    {
     }
 }
