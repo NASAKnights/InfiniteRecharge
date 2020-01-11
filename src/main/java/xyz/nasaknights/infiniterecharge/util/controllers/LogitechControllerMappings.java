@@ -1,8 +1,9 @@
 package xyz.nasaknights.infiniterecharge.util.controllers;
 
-public enum LogitechControllerMappings {
+public enum LogitechControllerMappings
+{
 
-    //TODO Verify IDs
+    // TODO Verify IDs
 
     //buttons
     X(1),
@@ -26,11 +27,13 @@ public enum LogitechControllerMappings {
 
     private int id;
 
-    LogitechControllerMappings(int id) {
+    LogitechControllerMappings(int id)
+    {
         this.id = id;
     }
 
-    public int getID() {
+    public int getID()
+    {
         return this.id;
     }
 }

@@ -5,26 +5,29 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.util.RobotMap;
-import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_WPI_TalonFX;
+import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
 
-public class DrivetrainSubsystem extends SubsystemBase {
-
+public class DrivetrainSubsystem extends SubsystemBase
+{
     private DifferentialDrive drive;
     private SpeedControllerGroup left, right;
 
     private Lazy_WPI_TalonFX leftMaster,
-                         leftFront,
-                         leftRear,
-                         rightMaster,
-                         rightFront,
-                         rightRear;
+            leftFront,
+            leftRear,
+            rightMaster,
+            rightFront,
+            rightRear;
 
-    public DrivetrainSubsystem() {
+    public DrivetrainSubsystem()
+    {
         initMotors();
     }
 
-    public void drive(double throttle, double turn) {
-        switch (RobotContainer.getProfile().getDriveType()) {
+    public void drive(double throttle, double turn)
+    {
+        switch (RobotContainer.getProfile().getDriveType())
+        {
             case kArcadeDrive:
                 arcadeDrive(throttle, turn);
                 break;
@@ -34,15 +37,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
     }
 
-    private void arcadeDrive(double throttle, double turn) {
+    private void arcadeDrive(double throttle, double turn)
+    {
         drive.arcadeDrive(throttle, turn);
     }
 
-    private void curvatureDrive(double throttle, double turn, boolean isQuickTurn) {
+    private void curvatureDrive(double throttle, double turn, boolean isQuickTurn)
+    {
         drive.curvatureDrive(throttle, turn, isQuickTurn);
     }
 
-    private void initMotors() {
+    private void initMotors()
+    {
 
         leftMaster = new Lazy_WPI_TalonFX(RobotMap.LEFT_MASTER);
         leftFront = new Lazy_WPI_TalonFX(RobotMap.LEFT_FRONT);
@@ -60,19 +66,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     }
 
-    private void configureMotors() {
-
+    private void configureMotors()
+    {
         leftMaster.configFactoryDefault();
         leftFront.configFactoryDefault();
         leftRear.configFactoryDefault();
         rightMaster.configFactoryDefault();
         rightFront.configFactoryDefault();
         rightRear.configFactoryDefault();
-
     }
 
     @Override
-    public void periodic() {
+    public void periodic()
+    {
 
+    }
+
+    public void stop()
+    {
+        left.stopMotor();
+        right.stopMotor();
     }
 }

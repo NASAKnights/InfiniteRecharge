@@ -1,10 +1,7 @@
 package xyz.nasaknights.infiniterecharge.util.controllers;
 
-public enum PS4ControllerMappings {
-
-    //TODO Verify IDs
-
-    //buttons
+public enum PS4ControllerMappings
+{
     X(1),
     CIRCLE(2),
     SQUARE(3),
@@ -25,12 +22,14 @@ public enum PS4ControllerMappings {
     RIGHT_Y_AXIS(5);
 
     private int id;
-        
-    PS4ControllerMappings(int id) {
+
+    PS4ControllerMappings(int id)
+    {
         this.id = id;
     }
 
-    public int getID() {
+    public int getID()
+    {
         return this.id;
     }
 

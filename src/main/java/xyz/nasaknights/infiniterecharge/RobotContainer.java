@@ -4,7 +4,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
 import xyz.nasaknights.infiniterecharge.util.driver.DriverProfile;
 
-public class RobotContainer {
+public class RobotContainer
+{
 
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
 
@@ -13,42 +14,51 @@ public class RobotContainer {
     private static Joystick driver = new Joystick(Constants.DRIVER_ID);
     private static Joystick operator = new Joystick(Constants.OPERATOR_ID);
 
-    public RobotContainer() {
+    public RobotContainer()
+    {
 
         // Configure the button bindings
         configureButtonBindings();
 
     }
 
-    public static Joystick getDriver() {
+    public static Joystick getDriver()
+    {
         return driver;
     }
 
-    public static double getDriverRawAxis(int axis) {
+    public static double getDriverRawAxis(int axis)
+    {
         return getDriver().getRawAxis(axis);
     }
 
-    public static Joystick getOperator() {
+    public static Joystick getOperator()
+    {
         return operator;
     }
 
-    public static double getOperatorRawAxis(int axis) {
+    public static double getOperatorRawAxis(int axis)
+    {
         return getOperator().getRawAxis(axis);
     }
 
-    public static DriverProfile getProfile() {
+    public static DriverProfile getProfile()
+    {
         return profile;
     }
 
-    public static void setProfile(DriverProfile profile) {
+    public static void setProfile(DriverProfile profile)
+    {
         RobotContainer.profile = profile;
     }
 
-    public static DrivetrainSubsystem getDrivetrain() {
+    public static DrivetrainSubsystem getDrivetrain()
+    {
         return drivetrainSubsystem;
     }
 
-    private void configureButtonBindings() {
+    private void configureButtonBindings()
+    {
 
     }
 

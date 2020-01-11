@@ -4,38 +4,45 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings;
 
-public class DriveCommand extends CommandBase {
+public class DriveCommand extends CommandBase
+{
 
-    public DriveCommand() {
+    public DriveCommand()
+    {
         addRequirements(RobotContainer.getDrivetrain());
         setName("Drive Command");
     }
 
     @Override
-    public void initialize() {
+    public void initialize()
+    {
 
     }
 
     @Override
-    public void execute() {
-        double throttle = 0.0;
-        double turn = 0.0;
-        switch (RobotContainer.getProfile().getControlType()) {
+    public void execute()
+    {
+        double throttle;
+        double turn;
+        switch (RobotContainer.getProfile().getControlType())
+        {
             case kGTA:
-                double accel = RobotContainer.getDriverRawAxis(PS4ControllerMappings.LEFT_TRIGGER.getID());
-                double decel = RobotContainer.getDriverRawAxis(PS4ControllerMappings.RIGHT_TRIGGER.getID());
-                throttle = accel - decel;
+                throttle = RobotContainer.getDriverRawAxis(PS4ControllerMappings.LEFT_TRIGGER.getID()) - RobotContainer.getDriverRawAxis(PS4ControllerMappings.RIGHT_TRIGGER.getID());
                 turn = RobotContainer.getDriverRawAxis(PS4ControllerMappings.RIGHT_X_AXIS.getID());
             case kSticks:
                 throttle = RobotContainer.getDriverRawAxis(PS4ControllerMappings.LEFT_Y_AXIS.getID());
                 turn = RobotContainer.getDriverRawAxis(PS4ControllerMappings.RIGHT_X_AXIS.getID());
+                break;
+            default:
+                throttle = 0;
+                turn = 0;
         }
         RobotContainer.getDrivetrain().drive(throttle, turn);
     }
 
     @Override
-    public void end(boolean interrupted) {
-        
+    public void end(boolean interrupted)
+    {
+        RobotContainer.getDrivetrain().stop();
     }
-
 }

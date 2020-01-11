@@ -1,6 +1,8 @@
 package xyz.nasaknights.infiniterecharge.util.controllers;
 
-public enum XBoxControllerMappings {
+@Deprecated
+public enum XboxControllerMappings
+{
 
     //TODO get real ID numbers
 
@@ -24,11 +26,13 @@ public enum XBoxControllerMappings {
 
     private int id;
 
-    XBoxControllerMappings(int id) {
+    XboxControllerMappings(int id)
+    {
         this.id = id;
     }
 
-    public int getID() {
+    public int getID()
+    {
         return id;
     }
 }
