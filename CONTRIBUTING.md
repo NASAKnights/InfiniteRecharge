@@ -10,7 +10,7 @@ By committing changes to this repository or any of its branches, you are agreein
 
 - All brackets in Java code should be wrapped to the next line
 - Interface file names should begin with an 'I', as such: ISerializable
-- Constants should be upper snake case, such as: FRONT_LEFT_DRIVE_ID, DRIVER_ID, or VISION_IP
+- Constants should be upper snake case, such as: `FRONT_LEFT_DRIVE_ID`, `DRIVER_ID`, or `VISION_IP`
 - Camel case should be used for method and variable names, as such: getDriveMotorID()
 - Excess spaces and / or whitespace should not be present
 - Methods directly interacting with subsystems should be placed in their respective subsystem's class
