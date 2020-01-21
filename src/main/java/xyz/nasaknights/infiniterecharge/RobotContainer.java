@@ -2,7 +2,7 @@ package xyz.nasaknights.infiniterecharge;
 
 import edu.wpi.first.wpilibj.Joystick;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
-import xyz.nasaknights.infiniterecharge.util.driver.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 public class RobotContainer
 {

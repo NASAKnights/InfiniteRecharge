@@ -2,14 +2,14 @@ package xyz.nasaknights.infiniterecharge;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import xyz.nasaknights.infiniterecharge.util.driver.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 public class Robot extends TimedRobot
 {
 
     private RobotContainer robotContainer;
 
-    private DriverProfile driverProfile = DriverProfile.kAutonomous;
+    private DriverProfile driverProfile = DriverProfile.AUTONOMOUS;
 
     @Override
     public void robotInit()
