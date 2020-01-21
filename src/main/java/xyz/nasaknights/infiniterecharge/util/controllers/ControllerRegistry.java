@@ -64,7 +64,7 @@ public class ControllerRegistry
     public enum ControllerAssignment
     {
         DRIVER,
-        OPERATOR;
+        OPERATOR
     }
 
     static class PortAlreadyAllocatedException extends Exception

@@ -22,7 +22,6 @@ public class DriveCommand extends CommandBase
     }
 
     @Override
-    @SuppressWarnings("Unused")
     public void execute()
     {
         double throttle;
