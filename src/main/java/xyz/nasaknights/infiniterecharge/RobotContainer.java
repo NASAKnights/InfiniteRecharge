@@ -1,11 +1,13 @@
 package xyz.nasaknights.infiniterecharge;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 public class RobotContainer
 {
+    private static final Compressor compressor = new Compressor(Constants.PCM_ID);
 
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
 
@@ -20,6 +22,8 @@ public class RobotContainer
         // Configure the button bindings
         configureButtonBindings();
 
+        compressor.setClosedLoopControl(true);
+        compressor.start();
     }
 
     public static Joystick getDriver()
