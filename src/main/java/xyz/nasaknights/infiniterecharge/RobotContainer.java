@@ -1,8 +1,13 @@
 package xyz.nasaknights.infiniterecharge;
 
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
-import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings;
+import xyz.nasaknights.infiniterecharge.util.driver.DriverProfile;
 
 public class RobotContainer
 {
@@ -10,9 +15,9 @@ public class RobotContainer
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
 
     private static DriverProfile profile;
-
     private static Joystick driver = new Joystick(Constants.DRIVER_ID);
     private static Joystick operator = new Joystick(Constants.OPERATOR_ID);
+    private static AHRS navx;
 
     public RobotContainer()
     {
@@ -52,19 +57,39 @@ public class RobotContainer
         RobotContainer.profile = profile;
     }
 
+    public static AHRS getIMU()
+    {
+        return navx;
+    }
+
     public static DrivetrainSubsystem getDrivetrain()
     {
         return drivetrainSubsystem;
     }
 
-    private void configureButtonBindings()
+    public static void initIMU()
     {
-
+        navx = new AHRS(SPI.Port.kMXP);
     }
 
-//    public Command getAutonomousCommand()
-//    {
-//        // TODO Work on autonomous?
-//        return autonomousCommand;
-//    }
+    public static double getAutonomousThrottleSpeed()
+    {
+        return 0.0;
+    }
+
+    public static double getAutonomousTurnSpeed()
+    {
+        return 0.0;
+    }
+
+    private void configureButtonBindings()
+    {
+        new JoystickButton(driver, PS4ControllerMappings.RIGHT_JOYSTICK.getID()).whenPressed(new DriveToAngleCommand(0.0));
+    }
+
+    //    public Command getAutonomousCommand()
+    //    {
+    //        // TODO Work on autonomous?
+    //        return autonomousCommand;
+    //    }
 }

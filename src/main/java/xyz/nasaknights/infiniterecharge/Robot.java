@@ -1,11 +1,14 @@
 package xyz.nasaknights.infiniterecharge;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 public class Robot extends TimedRobot
 {
+    private static DriveCommand driveCommand = new DriveCommand();
 
     private RobotContainer robotContainer;
 
@@ -16,14 +19,18 @@ public class Robot extends TimedRobot
     {
         robotContainer = new RobotContainer();
         RobotContainer.setProfile(driverProfile);
+        driveCommand.schedule(); // schedules the Drive Command which cannot be interruptible
     }
 
     @Override
     public void robotPeriodic()
     {
         CommandScheduler.getInstance().run();
-    }
 
+        SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
+        SmartDashboard.putNumberArray("Turn PID variables", RobotContainer.getDrivetrain().getTurnPID());
+        RobotContainer.getDrivetrain().setTurnPID(SmartDashboard.getNumberArray("Turn PID variables", RobotContainer.getDrivetrain().getTurnPID()));
+    }
     @Override
     public void disabledInit()
     {
@@ -64,5 +71,10 @@ public class Robot extends TimedRobot
     @Override
     public void testPeriodic()
     {
+    }
+
+    public static DriveCommand getDriveCommand()
+    {
+        return driveCommand;
     }
 }
