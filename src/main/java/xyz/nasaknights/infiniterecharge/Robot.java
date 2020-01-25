@@ -28,8 +28,12 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().run();
 
         SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
-        SmartDashboard.putNumberArray("Turn PID variables", RobotContainer.getDrivetrain().getTurnPID());
-        RobotContainer.getDrivetrain().setTurnPID(SmartDashboard.getNumberArray("Turn PID variables", RobotContainer.getDrivetrain().getTurnPID()));
+        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
+        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());
+        SmartDashboard.putNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD());
+        RobotContainer.getDrivetrain().setTurnP(SmartDashboard.getNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP()));
+        RobotContainer.getDrivetrain().setTurnI(SmartDashboard.getNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI()));
+        RobotContainer.getDrivetrain().setTurnD(SmartDashboard.getNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD()));
     }
     @Override
     public void disabledInit()

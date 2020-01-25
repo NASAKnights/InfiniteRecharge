@@ -80,34 +80,43 @@ public class DrivetrainSubsystem extends SubsystemBase
         turnController.setIntegratorRange(-5, 5); //Integral proportion cannot add more than 5 or less than -5
     }
 
-    public double[] getTurnPID()
+    public double getTurnP()
     {
-        double[] returnArray = {pTurn, iTurn, dTurn};
-        return returnArray;
+        return turnController.getP();
     }
 
-    public void setTurnPID(double[] pidArray)
+    public double getTurnI()
     {
-        for (int index = 0; index > pidArray.length; index++)
-        {
-            if (index == 0)
-            {
-                pTurn = pidArray[index];
-            } else if (index == 1)
-            {
-                iTurn = pidArray[index];
-            } else if (index == 2)
-            {
-                dTurn = pidArray[index];
-            }
+        return turnController.getI();
+    }
 
-            setTurnPID();
+    public double getTurnD()
+    {
+        return turnController.getD();
+    }
+
+    public void setTurnP(double p)
+    {
+        if (pTurn != p)
+        {
+            turnController.setP(p);
         }
     }
 
-    public void setTurnPID()
+    public void setTurnI(double i)
     {
-        turnController.setPID(pTurn, iTurn, dTurn);
+        if (iTurn != i)
+        {
+            turnController.setI(i);
+        }
+    }
+
+    public void setTurnD(double d)
+    {
+        if (dTurn != d)
+        {
+            turnController.setD(d);
+        }
     }
 
     public void drive(double throttle, double turn)
