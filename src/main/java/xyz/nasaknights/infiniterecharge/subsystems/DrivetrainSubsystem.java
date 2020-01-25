@@ -1,43 +1,58 @@
 package xyz.nasaknights.infiniterecharge.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.util.RobotMap;
-import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_TalonSRX;
-import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_VictorSPX;
-
-//import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_TalonFX;
 
 
 public class DrivetrainSubsystem extends SubsystemBase
 {
     //utilities for the drive methods
-    public static final double kDefaultQuickStopThreshold = 0.2;
     public static final double kDefaultQuickStopAlpha = 0.1;
-    private final ControlMode percentOutput = ControlMode.PercentOutput;
+    public static final double kDefaultQuickStopThreshold = 0.2;
+    private final TalonFXControlMode percentOutput = TalonFXControlMode.PercentOutput;
     public boolean rightSideInverted = false;
-    private Lazy_TalonSRX leftMaster, rightMaster;
-    private Lazy_VictorSPX leftFront, leftRear, rightFront, rightRear;
+    private TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration()
+    {{
+        supplyCurrLimit = new SupplyCurrentLimitConfiguration()
+        {{
+            enable = true;
+            currentLimit = 32;
+            triggerThresholdCurrent = 32;
+            triggerThresholdTime = 0;
+        }};
+        statorCurrLimit = new StatorCurrentLimitConfiguration()
+        {{
+            enable = true;
+            currentLimit = 32;
+            triggerThresholdCurrent = 32;
+            triggerThresholdTime = 0;
+        }};
+        // default TalonFXConfiguration stuff
+        //        motorCommutation = MotorCommutation.Trapezoidal;
+        //        absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+        //        integratedSensorOffsetDegrees = 0;
+        //        initializationStrategy = SensorInitializationStrategy.BootToZero;
+
+    }};
+
     //private TalonFXConfiguration configuration;
-    /*private Lazy_TalonFX leftMaster,
-            leftFront,
-            leftRear,
-            rightMaster,
-            rightFront,
-            rightRear;*/
+    private Lazy_TalonFX leftMaster, leftFront, leftRear, rightMaster, rightFront, rightRear;
     private double deadband = 0.02;
     private double quickStopThreshold = kDefaultQuickStopThreshold;
     private double quickStopAlpha = kDefaultQuickStopAlpha;
     private double quickStopAccumulator;
-
     //turn PID control
     private PIDController turnController;
-    private double kP = 1.0;
-    private double kI = 0.0;
-    private double kD = 0.0;
+    private double pTurn = 1.0;
+    private double iTurn = 0.0;
+    private double dTurn = 0.0;
+
 
     public DrivetrainSubsystem()
     {
@@ -50,9 +65,14 @@ public class DrivetrainSubsystem extends SubsystemBase
         return turnController;
     }
 
+    public boolean isAtAngle()
+    {
+        return getTurnController().atSetpoint();
+    }
+
     private void initPIDTurnController()
     {
-        turnController = new PIDController(kP, kI, kD);
+        turnController = new PIDController(pTurn, iTurn, dTurn);
 
         //turn controller settings
         turnController.setTolerance(0.5, 5);
@@ -60,14 +80,44 @@ public class DrivetrainSubsystem extends SubsystemBase
         turnController.setIntegratorRange(-5, 5); //Integral proportion cannot add more than 5 or less than -5
     }
 
+    public double[] getTurnPID()
+    {
+        double[] returnArray = {pTurn, iTurn, dTurn};
+        return returnArray;
+    }
+
+    public void setTurnPID(double[] pidArray)
+    {
+        for (int index = 0; index > pidArray.length; index++)
+        {
+            if (index == 0)
+            {
+                pTurn = pidArray[index];
+            } else if (index == 1)
+            {
+                iTurn = pidArray[index];
+            } else if (index == 2)
+            {
+                dTurn = pidArray[index];
+            }
+
+            setTurnPID();
+        }
+    }
+
+    public void setTurnPID()
+    {
+        turnController.setPID(pTurn, iTurn, dTurn);
+    }
+
     public void drive(double throttle, double turn)
     {
         switch (RobotContainer.getProfile().getDriveType())
         {
-            case kArcadeDrive:
+            case ARCADE_DRIVE:
                 arcadeDrive(throttle, turn);
                 break;
-            case kCurvatureDrive:
+            case CURVATURE_DRIVE:
                 curvatureDrive(throttle, turn, true);
                 break;
         }
@@ -221,12 +271,12 @@ public class DrivetrainSubsystem extends SubsystemBase
     private void initMotors()
     {
 
-        leftMaster = new Lazy_TalonSRX(RobotMap.LEFT_MASTER);
-        leftFront = new Lazy_VictorSPX(RobotMap.LEFT_FRONT);
-        leftRear = new Lazy_VictorSPX(RobotMap.LEFT_REAR);
-        rightMaster = new Lazy_TalonSRX(RobotMap.RIGHT_MASTER);
-        rightFront = new Lazy_VictorSPX(RobotMap.RIGHT_FRONT);
-        rightRear = new Lazy_VictorSPX(RobotMap.RIGHT_REAR);
+        leftMaster = new Lazy_TalonFX(RobotMap.LEFT_MASTER);
+        leftFront = new Lazy_TalonFX(RobotMap.LEFT_FRONT);
+        leftRear = new Lazy_TalonFX(RobotMap.LEFT_REAR);
+        rightMaster = new Lazy_TalonFX(RobotMap.RIGHT_MASTER);
+        rightFront = new Lazy_TalonFX(RobotMap.RIGHT_FRONT);
+        rightRear = new Lazy_TalonFX(RobotMap.RIGHT_REAR);
 
         configureMotors();
 
@@ -241,18 +291,48 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightFront.configFactoryDefault();
         rightRear.configFactoryDefault();
 
+        leftMaster.configAllSettings(talonFXConfiguration);
+        leftFront.configAllSettings(talonFXConfiguration);
+        leftRear.configAllSettings(talonFXConfiguration);
+        rightMaster.configAllSettings(talonFXConfiguration);
+        rightFront.configAllSettings(talonFXConfiguration);
+        rightRear.configAllSettings(talonFXConfiguration);
+
+        leftFront.setInverted(true);
+        leftRear.setInverted(true);
+        rightFront.setInverted(true);
+        rightRear.setInverted(true);
+
         leftFront.follow(leftMaster);
         leftRear.follow(leftRear);
         rightFront.follow(rightMaster);
         rightRear.follow(rightMaster);
     }
 
-    public void setLeft(ControlMode controlMode, double output)
+    public void prepareClimbMotors()
+    {
+        StatorCurrentLimitConfiguration climbStator = new StatorCurrentLimitConfiguration()
+        {{
+            enable = true; //enables current limiting
+            currentLimit = 8; // 20 percent power
+            triggerThresholdCurrent = 8; //starts limit at 20 percent power
+            triggerThresholdTime = 0; //starts limiting 0 seconds after threshold current is reached
+        }};
+
+        leftMaster.configStatorCurrentLimit(climbStator);
+        leftFront.configStatorCurrentLimit(climbStator);
+        leftRear.configStatorCurrentLimit(climbStator);
+        rightMaster.configStatorCurrentLimit(climbStator);
+        rightFront.configStatorCurrentLimit(climbStator);
+        rightRear.configStatorCurrentLimit(climbStator);
+    }
+
+    public void setLeft(TalonFXControlMode controlMode, double output)
     {
         leftMaster.set(controlMode, output);
     }
 
-    public void setRight(ControlMode controlMode, double output)
+    public void setRight(TalonFXControlMode controlMode, double output)
     {
         rightMaster.set(controlMode, output);
     }

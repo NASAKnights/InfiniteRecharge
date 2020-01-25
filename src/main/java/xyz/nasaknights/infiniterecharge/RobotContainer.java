@@ -6,8 +6,9 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
+import xyz.nasaknights.infiniterecharge.util.RobotMap;
 import xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings;
-import xyz.nasaknights.infiniterecharge.util.driver.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 public class RobotContainer
 {
@@ -69,7 +70,7 @@ public class RobotContainer
 
     public static void initIMU()
     {
-        navx = new AHRS(SPI.Port.kMXP);
+        navx = new AHRS(RobotMap.IMU_PORT);
     }
 
     public static double getAutonomousThrottleSpeed()
