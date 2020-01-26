@@ -1,4 +1,4 @@
-package xyz.nasaknights.infiniterecharge.util.control.motors.wpi;
+package xyz.nasaknights.infiniterecharge.util.control.motors;
 
 import com.revrobotics.CANSparkMax;
 

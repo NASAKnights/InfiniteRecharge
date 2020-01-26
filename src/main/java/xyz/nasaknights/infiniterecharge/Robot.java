@@ -19,7 +19,7 @@ public class Robot extends TimedRobot
     {
         robotContainer = new RobotContainer();
         RobotContainer.setProfile(driverProfile);
-        driveCommand.schedule(); // schedules the Drive Command which cannot be interruptible
+        driveCommand.schedule(); // schedules a Drive Command which cannot be interruptible
     }
 
     @Override
@@ -28,6 +28,7 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().run();
 
         SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
+        shooterCheck(); // displays and sets the speed of the motor controllers in the shooter subsystem
         SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
         SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());
         SmartDashboard.putNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD());
@@ -75,6 +76,12 @@ public class Robot extends TimedRobot
     @Override
     public void testPeriodic()
     {
+    }
+
+    private void shooterCheck()
+    {
+        SmartDashboard.putNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get());
+        RobotContainer.getShooterSubsystem().set(SmartDashboard.getNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get()));
     }
 
     public static DriveCommand getDriveCommand()

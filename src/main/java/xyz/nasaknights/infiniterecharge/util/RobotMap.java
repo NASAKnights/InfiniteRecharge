@@ -2,6 +2,10 @@ package xyz.nasaknights.infiniterecharge.util;
 
 import edu.wpi.first.wpilibj.SPI;
 
+/**
+ * @deprecated This class is outdated by the Constants class.
+ */
+@Deprecated
 public class RobotMap
 {
     //NavX IMU
@@ -15,4 +19,6 @@ public class RobotMap
     public static final short RIGHT_FRONT = 0;
     public static final short RIGHT_REAR = 0;
 
+    public static final int LEFT_SHOOTER_SPARK = 0;
+    public static final int RIGHT_SHOOTER_SPARK = 0;
 }
