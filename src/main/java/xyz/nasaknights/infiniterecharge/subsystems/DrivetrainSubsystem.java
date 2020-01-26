@@ -3,35 +3,37 @@ package xyz.nasaknights.infiniterecharge.subsystems;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
-import xyz.nasaknights.infiniterecharge.util.RobotMap;
-import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_TalonFX;
+import xyz.nasaknights.infiniterecharge.Constants;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
+import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
 
 
 public class DrivetrainSubsystem extends SubsystemBase
 {
     //utilities for the drive methods
-    public static final double kDefaultQuickStopAlpha = 0.1;
-    public static final double kDefaultQuickStopThreshold = 0.2;
     private final TalonFXControlMode percentOutput = TalonFXControlMode.PercentOutput;
-    public boolean rightSideInverted = false;
+
+    private static final DriveCommand driveCommand = new DriveCommand();
+
+    //a configuration for the TalonFX motor controllers
     private TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration()
     {{
         supplyCurrLimit = new SupplyCurrentLimitConfiguration()
         {{
-            enable = true;
-            currentLimit = 32;
-            triggerThresholdCurrent = 32;
-            triggerThresholdTime = 0;
+            enable = true; // enables current limiting
+            currentLimit = 32; // limit to 32 amps
+            triggerThresholdCurrent = 32; // when 32 amps of power are hit limit to 32 amps
+            triggerThresholdTime = 0; // when 32 amps are hit limit to 32 amps after 0 seconds
         }};
         statorCurrLimit = new StatorCurrentLimitConfiguration()
         {{
-            enable = true;
-            currentLimit = 32;
-            triggerThresholdCurrent = 32;
-            triggerThresholdTime = 0;
+            enable = true; // enables current limiting
+            currentLimit = 32; // limit to 32 amps
+            triggerThresholdCurrent = 32; // when 32 amps of power are hit limit to 32 amps
+            triggerThresholdTime = 0; // when 32 amps are hit limit to 32 amps after 0 seconds
         }};
         // default TalonFXConfiguration stuff
         //        motorCommutation = MotorCommutation.Trapezoidal;
@@ -41,23 +43,37 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     }};
 
-    //private TalonFXConfiguration configuration;
-    private Lazy_TalonFX leftMaster, leftFront, leftRear, rightMaster, rightFront, rightRear;
-    private double deadband = 0.02;
-    private double quickStopThreshold = kDefaultQuickStopThreshold;
-    private double quickStopAlpha = kDefaultQuickStopAlpha;
-    private double quickStopAccumulator;
+    private DifferentialDrive differential; // differential drive for ease of coding with West Coast drivetrains
+
+    private Lazy_WPI_TalonFX leftMaster, // left master TalonFX
+            leftFront, // left front TalonFX
+            leftRear, // left rear TalonFX
+            rightMaster, // right master TalonFX
+            rightFront, // right front TalonFX
+            rightRear; // right rear TalonFX
+
     //turn PID control
     private PIDController turnController;
-    private double pTurn = 1.0;
-    private double iTurn = 0.0;
-    private double dTurn = 0.0;
 
+    // should be tunable using the SmartDashboard application
+    private double pTurn = 1.0; // p (proportional) variable
+    private double iTurn = 0.0; // i (integral) variable
+    private double dTurn = 0.0; // d (derivative) variable
+
+    // TODO Finish and integrate distance PID and utils for it
+    //    private static final int TICKS_PER_ROTATION = 2048;
+    //    private static final double LOW_GEAR_RATIO = 0.0; // fill in later
+    //    private static final double WHEEL_CIRCUMFERENCE = 8 * Math.PI;
+    //    private PIDController distanceController;
+    //    private double pDistance = 1.0;
+    //    private double iDistance = 0.0;
+    //    private double dDistance = 0.0;
 
     public DrivetrainSubsystem()
     {
-        initMotors();
-        initPIDTurnController();
+        initMotors(); // set up motors
+        initPIDTurnController(); // set up turn PID
+        setDefaultCommand(driveCommand); // will run this DriveCommand if no other commands are running that require the DrivetrainSubsystem
     }
 
     public PIDController getTurnController()
@@ -124,182 +140,38 @@ public class DrivetrainSubsystem extends SubsystemBase
         switch (RobotContainer.getProfile().getDriveType())
         {
             case ARCADE_DRIVE:
-                arcadeDrive(throttle, turn);
+                differential.arcadeDrive(throttle, turn);
                 break;
             case CURVATURE_DRIVE:
-                curvatureDrive(throttle, turn, true);
+                differential.curvatureDrive(throttle, turn, true);
                 break;
         }
     }
 
-    private void arcadeDrive(double throttle, double turn)
+    public void driveToAngle(double angle)
     {
-        throttle = MathUtil.clamp(throttle, -1, 1);
-        throttle = applyDeadband(throttle, deadband);
-
-        turn = MathUtil.clamp(turn, -1, 1);
-        turn = applyDeadband(turn, deadband);
-
-        double leftMotorOutput;
-        double rightMotorOutput;
-
-        double maxInput = Math.copySign(Math.max(Math.abs(throttle), Math.abs(turn)), throttle);
-
-        if (throttle >= 0.0)
-        {
-            // First quadrant, else second quadrant
-            if (turn >= 0.0)
-            {
-                leftMotorOutput = maxInput;
-                rightMotorOutput = throttle - turn;
-            } else
-            {
-                leftMotorOutput = throttle + turn;
-                rightMotorOutput = maxInput;
-            }
-        } else
-        {
-            // Third quadrant, else fourth quadrant
-            if (turn >= 0.0)
-            {
-                leftMotorOutput = throttle + turn;
-                rightMotorOutput = maxInput;
-            } else
-            {
-                leftMotorOutput = maxInput;
-                rightMotorOutput = throttle - turn;
-            }
-        }
-
-        setLeft(percentOutput, MathUtil.clamp(leftMotorOutput, -1.0, 1.0));
-        setRight(percentOutput, MathUtil.clamp(rightMotorOutput, -1.0, 1.0) * -1);
-    }
-
-    private void curvatureDrive(double throttle, double turn, boolean quickTurn)
-    {
-        throttle = MathUtil.clamp(throttle, -1.0, 1.0);
-        throttle = applyDeadband(throttle, deadband);
-
-        turn = MathUtil.clamp(turn, -1.0, 1.0);
-        turn = applyDeadband(turn, deadband);
-
-        double angularPower;
-        boolean overPower;
-
-        if (quickTurn)
-        {
-            if (Math.abs(throttle) < quickStopThreshold)
-            {
-                quickStopAccumulator = (1 - quickStopAlpha) * quickStopAccumulator + quickStopAlpha * MathUtil.clamp(turn, -1.0, 1.0) * 2;
-            }
-            overPower = true;
-            angularPower = turn;
-        } else
-        {
-            overPower = false;
-            angularPower = Math.abs(throttle) * turn - quickStopAccumulator;
-
-            if (quickStopAccumulator > 1)
-            {
-                quickStopAccumulator -= 1;
-            } else if (quickStopAccumulator < -1)
-            {
-                quickStopAccumulator += 1;
-            } else
-            {
-                quickStopAccumulator = 0.0;
-            }
-        }
-
-        double leftMotorOutput = throttle + angularPower;
-        double rightMotorOutput = throttle - angularPower;
-
-        // If rotation is overpowered, reduce both outputs to within acceptable range
-        if (overPower)
-        {
-            if (leftMotorOutput > 1.0)
-            {
-                rightMotorOutput -= leftMotorOutput - 1.0;
-                leftMotorOutput = 1.0;
-            } else if (rightMotorOutput > 1.0)
-            {
-                leftMotorOutput -= rightMotorOutput - 1.0;
-                rightMotorOutput = 1.0;
-            } else if (leftMotorOutput < -1.0)
-            {
-                rightMotorOutput -= leftMotorOutput + 1.0;
-                leftMotorOutput = -1.0;
-            } else if (rightMotorOutput < -1.0)
-            {
-                leftMotorOutput -= rightMotorOutput + 1.0;
-                rightMotorOutput = -1.0;
-            }
-        }
-
-        // Normalize the wheel speeds
-        double maxMagnitude = Math.max(Math.abs(leftMotorOutput), Math.abs(rightMotorOutput));
-        if (maxMagnitude > 1.0)
-        {
-            leftMotorOutput /= maxMagnitude;
-            rightMotorOutput /= maxMagnitude;
-        }
-
-        double rightSideInvertedMultiplier = rightSideInverted ? -1 : 1;
-
-        setLeft(percentOutput, leftMotorOutput);
-        setRight(percentOutput, rightMotorOutput * rightSideInvertedMultiplier);
-
-    }
-
-    public boolean driveToAngle(double angle)
-    {
-        arcadeDrive(0.0, turnController.calculate(RobotContainer.getIMU().getAngle(), angle));
-
-        return turnController.atSetpoint();
-    }
-
-    private double applyDeadband(double value, double deadband)
-    {
-        if (Math.abs(value) > deadband)
-        {
-            if (value > 0.0)
-            {
-                //value is positive
-                return (value - deadband) / (1.0 - deadband);
-            } else
-            {
-                //if value is negative
-                return (value + deadband) / (1.0 - deadband);
-            }
-        } else
-        {
-            return 0.0;
-        }
+        differential.arcadeDrive(0.0, turnController.calculate(RobotContainer.getIMU().getAngle(), angle));
     }
 
     private void initMotors()
     {
 
-        leftMaster = new Lazy_TalonFX(RobotMap.LEFT_MASTER);
-        leftFront = new Lazy_TalonFX(RobotMap.LEFT_FRONT);
-        leftRear = new Lazy_TalonFX(RobotMap.LEFT_REAR);
-        rightMaster = new Lazy_TalonFX(RobotMap.RIGHT_MASTER);
-        rightFront = new Lazy_TalonFX(RobotMap.RIGHT_FRONT);
-        rightRear = new Lazy_TalonFX(RobotMap.RIGHT_REAR);
+        leftMaster = new Lazy_WPI_TalonFX(Constants.LEFT_MASTER);
+        leftFront = new Lazy_WPI_TalonFX(Constants.LEFT_FRONT);
+        leftRear = new Lazy_WPI_TalonFX(Constants.LEFT_REAR);
+        rightMaster = new Lazy_WPI_TalonFX(Constants.RIGHT_MASTER);
+        rightFront = new Lazy_WPI_TalonFX(Constants.RIGHT_FRONT);
+        rightRear = new Lazy_WPI_TalonFX(Constants.RIGHT_REAR);
 
         configureMotors();
+
+        differential = new DifferentialDrive(leftMaster, rightMaster);
 
     }
 
     private void configureMotors()
     {
-        leftMaster.configFactoryDefault();
-        leftFront.configFactoryDefault();
-        leftRear.configFactoryDefault();
-        rightMaster.configFactoryDefault();
-        rightFront.configFactoryDefault();
-        rightRear.configFactoryDefault();
-
+        //uses the global TalonFXConfiguration to configure the TalonFXs
         leftMaster.configAllSettings(talonFXConfiguration);
         leftFront.configAllSettings(talonFXConfiguration);
         leftRear.configAllSettings(talonFXConfiguration);
@@ -307,11 +179,13 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightFront.configAllSettings(talonFXConfiguration);
         rightRear.configAllSettings(talonFXConfiguration);
 
+        //inverts the non-master talons
         leftFront.setInverted(true);
         leftRear.setInverted(true);
         rightFront.setInverted(true);
         rightRear.setInverted(true);
 
+        //forces the non-master talons to follow the master talons on their respective sides
         leftFront.follow(leftMaster);
         leftRear.follow(leftRear);
         rightFront.follow(rightMaster);
@@ -320,6 +194,7 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     public void prepareClimbMotors()
     {
+        // climb current limit configuration, so we don't break the robot
         StatorCurrentLimitConfiguration climbStator = new StatorCurrentLimitConfiguration()
         {{
             enable = true; //enables current limiting
@@ -328,6 +203,7 @@ public class DrivetrainSubsystem extends SubsystemBase
             triggerThresholdTime = 0; //starts limiting 0 seconds after threshold current is reached
         }};
 
+        //uses the climb current configuration to configure the talons for the climb
         leftMaster.configStatorCurrentLimit(climbStator);
         leftFront.configStatorCurrentLimit(climbStator);
         leftRear.configStatorCurrentLimit(climbStator);
@@ -336,30 +212,9 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightRear.configStatorCurrentLimit(climbStator);
     }
 
-    public void setLeft(TalonFXControlMode controlMode, double output)
-    {
-        leftMaster.set(controlMode, output);
-    }
-
-    public void setRight(TalonFXControlMode controlMode, double output)
-    {
-        rightMaster.set(controlMode, output);
-    }
-
-    public void setQuickStopThreshold(double quickStopThreshold)
-    {
-        this.quickStopThreshold = quickStopThreshold;
-    }
-
     @Override
     public void periodic()
     {
 
-    }
-
-    public void stop()
-    {
-        setLeft(percentOutput, 0);
-        setRight(percentOutput, 0);
     }
 }
