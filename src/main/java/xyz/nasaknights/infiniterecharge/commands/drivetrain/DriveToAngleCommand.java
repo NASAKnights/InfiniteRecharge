@@ -3,6 +3,19 @@ package xyz.nasaknights.infiniterecharge.commands.drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 
+/**
+ * <p>A drive method that enables the drivetrain to turn to a certain angle using the PID control algorithm and
+ * the output from the NavX IMU sensor.</p>
+ * <p> See WPILib's
+ * <a href = http://docs.wpilib.org/en/latest/docs/software/advanced-control/introduction/introduction-to-pid.html>Introduction to PID</a>,
+ * <a href = http://docs.wpilib.org/en/latest/docs/software/advanced-control/introduction/tuning-pid-controller.html>Tuning a PID Controller</a>, and
+ * <a href = http://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/pidcontroller.html>PID Control in WPILib</a>
+ * for more information on PID control.</p>
+ *
+ * @see xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem
+ * @see com.kauailabs.navx.frc.AHRS
+ * @see edu.wpi.first.wpilibj.controller.PIDController
+ */
 public class DriveToAngleCommand extends CommandBase
 {
 
@@ -19,6 +32,7 @@ public class DriveToAngleCommand extends CommandBase
     {
         // TODO link angle with Vision Client
         this.angle = 0.0;
+        addRequirements(RobotContainer.getDrivetrain());
     }
 
     public DriveToAngleCommand(double angle)

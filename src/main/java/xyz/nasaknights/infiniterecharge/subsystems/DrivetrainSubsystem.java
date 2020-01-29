@@ -9,10 +9,24 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.Constants;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.*;
 import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
 
-
+/**
+ * <p>The programmatic representation of the drivetrain, which consists of six Falcon 500 motors as the drive motors,
+ * a single solenoid used switching between low and high gear for the motors, and a double solenoid for engaging
+ * the Power Takeoff to use the drive motors for the climb.</p>
+ * <p>The drivetrain can be controlled using the {@link DriveCommand} command, the {@link DriveToAngleCommand}
+ * command, and the {@link VisionDriveAssistCommand} command.</p>
+ * <p>The default command for the drivetrain subsystem is the {@link DriveCommand} command which will run
+ * if no other commands that require the drivetrain subsystem. For more on command-based programming,
+ * <a href = https://docs.wpilib.org/en/latest/docs/software/commandbased/index.html>click here</a> to see
+ * the WPILib documentation for Command-Based Programming.</p>
+ *
+ * @see DriveCommand
+ * @see DriveToAngleCommand
+ * @see VisionDriveAssistCommand
+ */
 public class DrivetrainSubsystem extends SubsystemBase
 {
     //utilities for the drive methods
@@ -58,15 +72,14 @@ public class DrivetrainSubsystem extends SubsystemBase
     private PIDController turnController;
 
     // should be tunable using the SmartDashboard application
-    private double pTurn = 1.0; // p (proportional) variable
-    private double iTurn = 0.0; // i (integral) variable
-    private double dTurn = 0.0; // d (derivative) variable
+    private double pTurn = 1.0; // P (proportional) variable
+    private double iTurn = 0.0; // I (integral) variable
+    private double dTurn = 0.0; // D (derivative) variable
 
     // TODO Finish and integrate distance PID and utils for it
 
     //    private static final int TICKS_PER_ROTATION = 2048;
-    //    private static final double LOW_GEAR_RATIO = 0.0;
-    //    private static final double HIGH_GEAR_RATIO = 0.0;
+    //    private static final double LOW_GEAR_RATIO = 0.0; // fill in later
     //    private static final double WHEEL_CIRCUMFERENCE = 8 * Math.PI;
     //    private PIDController distanceController;
     //    private double pDistance = 1.0;
@@ -125,31 +138,29 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     public void setTurnP(double p)
     {
-        if (pTurn != p)
-        {
-            turnController.setP(p);
-        }
+        turnController.setP((pTurn != p) ? p : getTurnP());
     }
 
     public void setTurnI(double i)
     {
-        if (iTurn != i)
-        {
-            turnController.setI(i);
-        }
+        turnController.setI((iTurn != i) ? i : getTurnI());
     }
 
     public void setTurnD(double d)
     {
-        if (dTurn != d)
-        {
-            turnController.setD(d);
-        }
+        turnController.setD((dTurn != d) ? d : getTurnD());
     }
 
+    /**
+     * The {@link DrivetrainSubsystem#drive(double, double)} method handles the input throttle and turn values
+     * and integrates them with the drive mode for the current driver profile
+     *
+     * @param throttle longitudinal speed
+     * @param turn     rotational speed
+     */
     public void drive(double throttle, double turn)
     {
-        switch (RobotContainer.getProfile().getDriveType())
+        switch (RobotContainer.getProfile().getDriveType()) // switch between the possible
         {
             case ARCADE_DRIVE:
                 differential.arcadeDrive(throttle, turn);

@@ -6,6 +6,11 @@ import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 
 import static xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings.*;
 
+/**
+ * The main command for the drivetrain subsystem.
+ *
+ * @see xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem
+ */
 public class DriveCommand extends CommandBase
 {
 
