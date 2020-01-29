@@ -2,6 +2,8 @@ package xyz.nasaknights.infiniterecharge.subsystems;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -61,17 +63,27 @@ public class DrivetrainSubsystem extends SubsystemBase
     private double dTurn = 0.0; // d (derivative) variable
 
     // TODO Finish and integrate distance PID and utils for it
+
     //    private static final int TICKS_PER_ROTATION = 2048;
-    //    private static final double LOW_GEAR_RATIO = 0.0; // fill in later
+    //    private static final double LOW_GEAR_RATIO = 0.0;
+    //    private static final double HIGH_GEAR_RATIO = 0.0;
     //    private static final double WHEEL_CIRCUMFERENCE = 8 * Math.PI;
     //    private PIDController distanceController;
     //    private double pDistance = 1.0;
     //    private double iDistance = 0.0;
     //    private double dDistance = 0.0;
 
+    private Solenoid driveGearShifter;
+    private DoubleSolenoid powerTakeoffShifter;
+
+    // TODO Verify these values
+    private DoubleSolenoid.Value climbGear = DoubleSolenoid.Value.kForward;
+    private DoubleSolenoid.Value driveGear = DoubleSolenoid.Value.kReverse;
+
     public DrivetrainSubsystem()
     {
         initMotors(); // set up motors
+        initPneumatics(); // set up solenoids
         initPIDTurnController(); // set up turn PID
         setDefaultCommand(driveCommand); // will run this DriveCommand if no other commands are running that require the DrivetrainSubsystem
     }
@@ -166,7 +178,6 @@ public class DrivetrainSubsystem extends SubsystemBase
         configureMotors();
 
         differential = new DifferentialDrive(leftMaster, rightMaster);
-
     }
 
     private void configureMotors()
@@ -179,12 +190,6 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightFront.configAllSettings(talonFXConfiguration);
         rightRear.configAllSettings(talonFXConfiguration);
 
-        //inverts the non-master talons
-        leftFront.setInverted(true);
-        leftRear.setInverted(true);
-        rightFront.setInverted(true);
-        rightRear.setInverted(true);
-
         //forces the non-master talons to follow the master talons on their respective sides
         leftFront.follow(leftMaster);
         leftRear.follow(leftRear);
@@ -194,7 +199,7 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     public void prepareClimbMotors()
     {
-        // climb current limit configuration, so we don't break the robot
+        // climb current limit configuration, so we don't break the robot as we climb
         StatorCurrentLimitConfiguration climbStator = new StatorCurrentLimitConfiguration()
         {{
             enable = true; //enables current limiting
@@ -210,6 +215,32 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightMaster.configStatorCurrentLimit(climbStator);
         rightFront.configStatorCurrentLimit(climbStator);
         rightRear.configStatorCurrentLimit(climbStator);
+    }
+
+    private void initPneumatics()
+    {
+        driveGearShifter = new Solenoid(Constants.SINGLE_DRIVE_GEAR_CHANNEL);
+        powerTakeoffShifter = new DoubleSolenoid(Constants.FORWARD_POWER_TAKEOFF_CHANNEL, Constants.REVERSE_POWER_TAKEOFF_CHANNEL);
+    }
+
+    public void setHighGear(boolean highGear)
+    {
+        driveGearShifter.set(highGear);
+    }
+
+    public void setClimbExtended(boolean extended)
+    {
+        powerTakeoffShifter.set(extended ? climbGear : driveGear);
+    }
+
+    public boolean isDriveAtHighGear()
+    {
+        return driveGearShifter.get();
+    }
+
+    public boolean isAtClimbGear()
+    {
+        return powerTakeoffShifter.get() == climbGear;
     }
 
     @Override
