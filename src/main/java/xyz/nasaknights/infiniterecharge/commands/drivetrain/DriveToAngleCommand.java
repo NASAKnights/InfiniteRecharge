@@ -1,6 +1,7 @@
 package xyz.nasaknights.infiniterecharge.commands.drivetrain;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 
 /**
@@ -16,62 +17,53 @@ import xyz.nasaknights.infiniterecharge.RobotContainer;
  * @see com.kauailabs.navx.frc.AHRS
  * @see edu.wpi.first.wpilibj.controller.PIDController
  */
-public class DriveToAngleCommand extends CommandBase
+public class DriveToAngleCommand extends PIDCommand
 {
-
     private final int COUNT_NEEDED = 5; //count must be this or greater to actually be at the right angle
     private double angle;
     private int count = 0; //count for if the bot is at the setpoint
+
+    // TODO Set these to final once PID values are tuned and placed in their respective variables below
+    private static double P;
+    private static double I;
+    private static double D;
 
     /**
      * @deprecated This constructor has been deprecated due to the VisionClient being not implemented at the time.
      * It will be un-deprecated when the Vision Client is added.
      */
     @Deprecated
-    public DriveToAngleCommand()
-    {
-        // TODO link angle with Vision Client
-        this.angle = 0.0;
-        addRequirements(RobotContainer.getDrivetrain());
-    }
-
     public DriveToAngleCommand(double angle)
     {
+        super(new PIDController(P, I, D), () -> RobotContainer.getIMU().getAngle(), 0, value ->
+        {
+        }, RobotContainer.getDrivetrain());
+        // TODO link angle with Vision Client
         this.angle = angle;
+        addRequirements(RobotContainer.getDrivetrain());
     }
 
     @Override
     public void initialize()
     {
-        //sensor and PID reset
-        RobotContainer.getIMU().reset();
-        RobotContainer.getDrivetrain().getTurnController().reset();
     }
 
     @Override
     public void execute()
     {
-        RobotContainer.getDrivetrain().driveToAngle(angle);
-
-        if (RobotContainer.getDrivetrain().getTurnController().atSetpoint())
-        {
-            count++;
-        } else
-        {
-            count = 0;
-        }
+        RobotContainer.getDrivetrain().arcadeDrive(0, m_controller.calculate(m_setpoint.getAsDouble()), false);
     }
 
     @Override
     public boolean isFinished()
     {
-        return (count >= COUNT_NEEDED) && RobotContainer.getDrivetrain().getTurnController().atSetpoint();
+        return this.m_controller.atSetpoint();
     }
 
     @Override
     public void end(boolean interrupted)
     {
-        System.out.println("PID Turn Command Ended");
+        this.m_controller.close();
     }
 
 }

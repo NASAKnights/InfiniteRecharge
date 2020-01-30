@@ -1,18 +1,19 @@
 package xyz.nasaknights.infiniterecharge.subsystems;
 
-import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.Constants;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.*;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.VisionDriveAssistCommand;
 import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
 
 /**
@@ -57,7 +58,9 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     }};
 
-    private DifferentialDrive differential; // differential drive for ease of coding with West Coast drivetrains
+    private SpeedControllerGroup left, right;
+
+    private DifferentialDrive drive; // differential drive for ease of coding with West Coast drivetrains
 
     private Lazy_WPI_TalonFX leftMaster, // left master TalonFX
             leftFront, // left front TalonFX
@@ -78,10 +81,6 @@ public class DrivetrainSubsystem extends SubsystemBase
         initMotors(); // set up motors
         initPneumatics(); // set up solenoids
     }
-
-    public void driveToAngle(double angle)
-    {
-        differential.arcadeDrive(0.0, turnController.calculate(RobotContainer.getIMU().getAngle(), angle));
 
     @Override
     public Command getDefaultCommand()
@@ -108,13 +107,31 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightFront = new Lazy_WPI_TalonFX(Constants.RIGHT_FRONT);
         rightRear = new Lazy_WPI_TalonFX(Constants.RIGHT_REAR);
 
-        configureMotors();
+        left = new SpeedControllerGroup(leftMaster, leftFront, leftRear);
+        right = new SpeedControllerGroup(rightMaster, rightFront, rightRear);
 
-        differential = new DifferentialDrive(leftMaster, rightMaster);
-    }
+        leftMaster.configFactoryDefault();
+        leftFront.configFactoryDefault();
+        leftRear.configFactoryDefault();
+        rightMaster.configFactoryDefault();
+        rightFront.configFactoryDefault();
+        rightRear.configFactoryDefault();
 
-    private void configureMotors()
-    {
+        leftMaster.setNeutralMode(NeutralMode.Coast);
+        leftFront.setNeutralMode(NeutralMode.Coast);
+        leftRear.setNeutralMode(NeutralMode.Coast);
+        rightMaster.setNeutralMode(NeutralMode.Coast);
+        rightFront.setNeutralMode(NeutralMode.Coast);
+        rightRear.setNeutralMode(NeutralMode.Coast);
+
+        leftMaster.setInverted(false);
+        leftFront.setInverted(true);
+        leftRear.setInverted(true);
+
+        rightMaster.setInverted(false);
+        rightFront.setInverted(true);
+        rightRear.setInverted(true);
+
         drive = new DifferentialDrive(left, right);
     }
 
@@ -142,28 +159,6 @@ public class DrivetrainSubsystem extends SubsystemBase
     {
         driveGearShifter = new Solenoid(Constants.SINGLE_DRIVE_GEAR_CHANNEL);
         powerTakeoffShifter = new DoubleSolenoid(Constants.FORWARD_POWER_TAKEOFF_CHANNEL, Constants.REVERSE_POWER_TAKEOFF_CHANNEL);
-
-        leftMaster.configFactoryDefault();
-        leftFront.configFactoryDefault();
-        leftRear.configFactoryDefault();
-        rightMaster.configFactoryDefault();
-        rightFront.configFactoryDefault();
-        rightRear.configFactoryDefault();
-
-        leftMaster.setNeutralMode(NeutralMode.Coast);
-        leftFront.setNeutralMode(NeutralMode.Coast);
-        leftRear.setNeutralMode(NeutralMode.Coast);
-        rightMaster.setNeutralMode(NeutralMode.Coast);
-        rightFront.setNeutralMode(NeutralMode.Coast);
-        rightRear.setNeutralMode(NeutralMode.Coast);
-
-        leftMaster.setInverted(false);
-        leftFront.setInverted(true);
-        leftRear.setInverted(true);
-
-        rightMaster.setInverted(false);
-        rightFront.setInverted(true);
-        rightRear.setInverted(true);
     }
 
     public void setHighGear(boolean highGear)

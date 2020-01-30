@@ -8,7 +8,6 @@ import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
 import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.ShooterSubsystem;
-import xyz.nasaknights.infiniterecharge.util.RobotMap;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 import xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings;
@@ -77,7 +76,7 @@ public class RobotContainer
 
     public static void initIMU()
     {
-        navx = new AHRS(RobotMap.IMU_PORT);
+        navx = new AHRS(Constants.IMU_PORT);
     }
 
     public static double getAutonomousThrottleSpeed()

@@ -1,5 +1,6 @@
 package xyz.nasaknights.infiniterecharge;
 
+import edu.wpi.first.wpilibj.SPI;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 public final class Constants
@@ -16,7 +17,9 @@ public final class Constants
     public static final int RIGHT_FRONT = 5;
     public static final int RIGHT_REAR = 6;
 
-    public static final int PCM_ID = 40
+    public static final int PCM_ID = 40;
+
+    public static final SPI.Port IMU_PORT = SPI.Port.kMXP;
 
 
     // Shooter Constants
