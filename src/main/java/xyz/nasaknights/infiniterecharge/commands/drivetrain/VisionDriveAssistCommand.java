@@ -11,6 +11,7 @@ public class VisionDriveAssistCommand extends CommandBase
 {
     public VisionDriveAssistCommand()
     {
+        addRequirements(RobotContainer.getDrivetrain());
     }
 
     @Override
