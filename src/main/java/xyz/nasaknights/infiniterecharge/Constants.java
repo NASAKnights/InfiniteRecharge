@@ -9,12 +9,12 @@ public final class Constants
     public static final short OPERATOR_ID = 1;
 
     // Drive Motor Constants
-    public static final int LEFT_MASTER = 0;
-    public static final int LEFT_FRONT = 0;
-    public static final int LEFT_REAR = 0;
-    public static final int RIGHT_MASTER = 0;
-    public static final int RIGHT_FRONT = 0;
-    public static final int RIGHT_REAR = 0;
+    public static final int LEFT_MASTER = 1;
+    public static final int LEFT_FRONT = 2;
+    public static final int LEFT_REAR = 3;
+    public static final int RIGHT_MASTER = 4;
+    public static final int RIGHT_FRONT = 5;
+    public static final int RIGHT_REAR = 6;
 
     public static final int PCM_ID = 40;
 
