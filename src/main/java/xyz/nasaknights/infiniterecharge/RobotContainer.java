@@ -1,6 +1,7 @@
 package xyz.nasaknights.infiniterecharge;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
@@ -8,11 +9,13 @@ import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.ShooterSubsystem;
 import xyz.nasaknights.infiniterecharge.util.RobotMap;
+import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 import xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings;
 
 public class RobotContainer
 {
+    private static final Compressor compressor = new Compressor(Constants.PCM_ID);
 
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
     private static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
@@ -24,10 +27,12 @@ public class RobotContainer
 
     public RobotContainer()
     {
+        ControllerRegistry.setupDriverJoystick(Constants.DRIVER_ID, Constants.CURRENT_DRIVER_PROFILE);
 
-        // Configure the button bindings
         configureButtonBindings();
 
+        compressor.setClosedLoopControl(true);
+        compressor.start();
     }
 
     public static Joystick getDriver()

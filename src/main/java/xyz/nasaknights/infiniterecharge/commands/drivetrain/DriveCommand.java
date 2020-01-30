@@ -3,6 +3,7 @@ package xyz.nasaknights.infiniterecharge.commands.drivetrain;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
+import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 import static xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings.*;
 
@@ -46,15 +47,22 @@ public class DriveCommand extends CommandBase
                 turn = Math.pow(rightTrigger, ControllerRegistry.doesDriverWantSquaredInputs() ? 2 : 1);
                 break;
             case STICKS:
-                throttle = Math.pow(leftYAxis, ControllerRegistry.doesDriverWantSquaredInputs() ? 2 : 1);
-                turn = Math.pow(rightXAxis, ControllerRegistry.doesDriverWantSquaredInputs() ? 2 : 1);
+                throttle = leftYAxis;
+                turn = rightXAxis * -1;
                 break;
             default:
                 throttle = 0;
                 turn = 0;
                 break;
         }
-        RobotContainer.getDrivetrain().drive(throttle, turn);
+
+        if (RobotContainer.getProfile().getDriveType() == DriverProfile.DriveType.ARCADE_DRIVE)
+        {
+            RobotContainer.getDrivetrain().arcadeDrive(throttle, turn, RobotContainer.getProfile().doesWantSquaredInputs());
+        } else
+        {
+            RobotContainer.getDrivetrain().curvatureDrive(throttle, turn, true);
+        }
     }
 
     @Override

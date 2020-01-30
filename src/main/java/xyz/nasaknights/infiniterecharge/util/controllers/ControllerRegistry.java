@@ -9,8 +9,8 @@ public class ControllerRegistry
 
     private static boolean doesDriverWantSquaredInputs;
 
-    private static int driverPort;
-    private static int operatorPort;
+    private static int driverPort = -1;
+    private static int operatorPort = -2;
 
     public static void setupDriverJoystick(int port, DriverProfile profile)
     {

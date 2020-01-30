@@ -5,7 +5,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.Constants;
@@ -29,11 +32,6 @@ import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX
  */
 public class DrivetrainSubsystem extends SubsystemBase
 {
-    //utilities for the drive methods
-    private final TalonFXControlMode percentOutput = TalonFXControlMode.PercentOutput;
-
-    private static final DriveCommand driveCommand = new DriveCommand();
-
     //a configuration for the TalonFX motor controllers
     private TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration()
     {{
@@ -68,24 +66,6 @@ public class DrivetrainSubsystem extends SubsystemBase
             rightFront, // right front TalonFX
             rightRear; // right rear TalonFX
 
-    //turn PID control
-    private PIDController turnController;
-
-    // should be tunable using the SmartDashboard application
-    private double pTurn = 1.0; // P (proportional) variable
-    private double iTurn = 0.0; // I (integral) variable
-    private double dTurn = 0.0; // D (derivative) variable
-
-    // TODO Finish and integrate distance PID and utils for it
-
-    //    private static final int TICKS_PER_ROTATION = 2048;
-    //    private static final double LOW_GEAR_RATIO = 0.0; // fill in later
-    //    private static final double WHEEL_CIRCUMFERENCE = 8 * Math.PI;
-    //    private PIDController distanceController;
-    //    private double pDistance = 1.0;
-    //    private double iDistance = 0.0;
-    //    private double dDistance = 0.0;
-
     private Solenoid driveGearShifter;
     private DoubleSolenoid powerTakeoffShifter;
 
@@ -97,88 +77,30 @@ public class DrivetrainSubsystem extends SubsystemBase
     {
         initMotors(); // set up motors
         initPneumatics(); // set up solenoids
-        initPIDTurnController(); // set up turn PID
-        setDefaultCommand(driveCommand); // will run this DriveCommand if no other commands are running that require the DrivetrainSubsystem
-    }
-
-    public PIDController getTurnController()
-    {
-        return turnController;
-    }
-
-    public boolean isAtAngle()
-    {
-        return getTurnController().atSetpoint();
-    }
-
-    private void initPIDTurnController()
-    {
-        turnController = new PIDController(pTurn, iTurn, dTurn);
-
-        //turn controller settings
-        turnController.setTolerance(0.5, 5);
-        turnController.enableContinuousInput(-180, 180); //enable continuous input
-        turnController.setIntegratorRange(-5, 5); //Integral proportion cannot add more than 5 or less than -5
-    }
-
-    public double getTurnP()
-    {
-        return turnController.getP();
-    }
-
-    public double getTurnI()
-    {
-        return turnController.getI();
-    }
-
-    public double getTurnD()
-    {
-        return turnController.getD();
-    }
-
-    public void setTurnP(double p)
-    {
-        turnController.setP((pTurn != p) ? p : getTurnP());
-    }
-
-    public void setTurnI(double i)
-    {
-        turnController.setI((iTurn != i) ? i : getTurnI());
-    }
-
-    public void setTurnD(double d)
-    {
-        turnController.setD((dTurn != d) ? d : getTurnD());
-    }
-
-    /**
-     * The {@link DrivetrainSubsystem#drive(double, double)} method handles the input throttle and turn values
-     * and integrates them with the drive mode for the current driver profile
-     *
-     * @param throttle longitudinal speed
-     * @param turn     rotational speed
-     */
-    public void drive(double throttle, double turn)
-    {
-        switch (RobotContainer.getProfile().getDriveType()) // switch between the possible
-        {
-            case ARCADE_DRIVE:
-                differential.arcadeDrive(throttle, turn);
-                break;
-            case CURVATURE_DRIVE:
-                differential.curvatureDrive(throttle, turn, true);
-                break;
-        }
     }
 
     public void driveToAngle(double angle)
     {
         differential.arcadeDrive(0.0, turnController.calculate(RobotContainer.getIMU().getAngle(), angle));
+
+    @Override
+    public Command getDefaultCommand()
+    {
+        return new DriveCommand();
+    }
+
+    public void arcadeDrive(double throttle, double turn, boolean squaredInputs)
+    {
+        drive.arcadeDrive(throttle, turn, squaredInputs);
+    }
+
+    public void curvatureDrive(double throttle, double turn, boolean isQuickTurn)
+    {
+        drive.curvatureDrive(throttle, turn, isQuickTurn);
     }
 
     private void initMotors()
     {
-
         leftMaster = new Lazy_WPI_TalonFX(Constants.LEFT_MASTER);
         leftFront = new Lazy_WPI_TalonFX(Constants.LEFT_FRONT);
         leftRear = new Lazy_WPI_TalonFX(Constants.LEFT_REAR);
@@ -193,19 +115,7 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     private void configureMotors()
     {
-        //uses the global TalonFXConfiguration to configure the TalonFXs
-        leftMaster.configAllSettings(talonFXConfiguration);
-        leftFront.configAllSettings(talonFXConfiguration);
-        leftRear.configAllSettings(talonFXConfiguration);
-        rightMaster.configAllSettings(talonFXConfiguration);
-        rightFront.configAllSettings(talonFXConfiguration);
-        rightRear.configAllSettings(talonFXConfiguration);
-
-        //forces the non-master talons to follow the master talons on their respective sides
-        leftFront.follow(leftMaster);
-        leftRear.follow(leftRear);
-        rightFront.follow(rightMaster);
-        rightRear.follow(rightMaster);
+        drive = new DifferentialDrive(left, right);
     }
 
     public void prepareClimbMotors()
@@ -232,6 +142,28 @@ public class DrivetrainSubsystem extends SubsystemBase
     {
         driveGearShifter = new Solenoid(Constants.SINGLE_DRIVE_GEAR_CHANNEL);
         powerTakeoffShifter = new DoubleSolenoid(Constants.FORWARD_POWER_TAKEOFF_CHANNEL, Constants.REVERSE_POWER_TAKEOFF_CHANNEL);
+
+        leftMaster.configFactoryDefault();
+        leftFront.configFactoryDefault();
+        leftRear.configFactoryDefault();
+        rightMaster.configFactoryDefault();
+        rightFront.configFactoryDefault();
+        rightRear.configFactoryDefault();
+
+        leftMaster.setNeutralMode(NeutralMode.Coast);
+        leftFront.setNeutralMode(NeutralMode.Coast);
+        leftRear.setNeutralMode(NeutralMode.Coast);
+        rightMaster.setNeutralMode(NeutralMode.Coast);
+        rightFront.setNeutralMode(NeutralMode.Coast);
+        rightRear.setNeutralMode(NeutralMode.Coast);
+
+        leftMaster.setInverted(false);
+        leftFront.setInverted(true);
+        leftRear.setInverted(true);
+
+        rightMaster.setInverted(false);
+        rightFront.setInverted(true);
+        rightRear.setInverted(true);
     }
 
     public void setHighGear(boolean highGear)
