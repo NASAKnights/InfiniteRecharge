@@ -157,8 +157,8 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     private void initPneumatics()
     {
-        driveGearShifter = new Solenoid(Constants.SINGLE_DRIVE_GEAR_CHANNEL);
-        powerTakeoffShifter = new DoubleSolenoid(Constants.FORWARD_POWER_TAKEOFF_CHANNEL, Constants.REVERSE_POWER_TAKEOFF_CHANNEL);
+        driveGearShifter = new Solenoid(Constants.PCM_ID, Constants.SINGLE_DRIVE_GEAR_CHANNEL);
+        powerTakeoffShifter = new DoubleSolenoid(Constants.PCM_ID, Constants.FORWARD_POWER_TAKEOFF_CHANNEL, Constants.REVERSE_POWER_TAKEOFF_CHANNEL);
     }
 
     public void setHighGear(boolean highGear)

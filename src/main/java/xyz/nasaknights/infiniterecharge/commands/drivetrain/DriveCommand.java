@@ -43,8 +43,8 @@ public class DriveCommand extends CommandBase
         switch (RobotContainer.getProfile().getControlType())
         {
             case GTA:
-                throttle = Math.pow(leftTrigger - rightTrigger, ControllerRegistry.doesDriverWantSquaredInputs() ? 2 : 1);
-                turn = Math.pow(rightTrigger, ControllerRegistry.doesDriverWantSquaredInputs() ? 2 : 1);
+                throttle = leftTrigger - rightTrigger;
+                turn = rightXAxis;
                 break;
             case STICKS:
                 throttle = leftYAxis;
