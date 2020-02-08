@@ -16,7 +16,13 @@ public final class Constants
     public static final int RIGHT_FRONT = 5;
     public static final int RIGHT_REAR = 6;
 
+    // Intake Constants
+    public static final int INTAKE_VICTOR = 9;
+    public static final int INTAKE_FORWARD_CHANNEL = 5;
+    public static final int INTAKE_REVERSE_CHANNEL = 6;
+
     public static final int PCM_ID = 40;
 
     public static final DriverProfile CURRENT_DRIVER_PROFILE = DriverProfile.DEFAULT;
+
 }

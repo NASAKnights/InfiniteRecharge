@@ -3,6 +3,7 @@ package xyz.nasaknights.infiniterecharge;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
+import xyz.nasaknights.infiniterecharge.subsystems.IntakeSubsystem;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
@@ -11,6 +12,7 @@ public class RobotContainer
     private static final Compressor compressor = new Compressor(Constants.PCM_ID);
 
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+    private static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
     private static DriverProfile profile;
 
@@ -62,14 +64,19 @@ public class RobotContainer
         return drivetrainSubsystem;
     }
 
+    public static IntakeSubsystem getIntake()
+    {
+        return intakeSubsystem;
+    }
+
     private void configureButtonBindings()
     {
 
     }
 
-//    public Command getAutonomousCommand()
-//    {
-//        // TODO Work on autonomous?
-//        return autonomousCommand;
-//    }
+    //    public Command getAutonomousCommand()
+    //    {
+    //        // TODO Work on autonomous?
+    //        return autonomousCommand;
+    //    }
 }
