@@ -1,5 +1,7 @@
 package xyz.nasaknights.infiniterecharge;
 
+import com.ctre.phoenix.music.Orchestra;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
@@ -11,6 +13,8 @@ public class RobotContainer
     private static final Compressor compressor = new Compressor(Constants.PCM_ID);
 
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+
+    private static Orchestra talonFXOrchestra;
 
     private static DriverProfile profile;
 
@@ -65,6 +69,14 @@ public class RobotContainer
     private void configureButtonBindings()
     {
 
+    }
+
+    public static Orchestra getTalonFXOrchestra() {
+        return talonFXOrchestra;
+    }
+
+    public static void setTalonFXOrchestra(Orchestra talonFXOrchestra) {
+        RobotContainer.talonFXOrchestra = talonFXOrchestra;
     }
 
 //    public Command getAutonomousCommand()

@@ -1,11 +1,20 @@
 package xyz.nasaknights.infiniterecharge.subsystems;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.music.Orchestra;
+
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.Constants;
+import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
 
@@ -57,6 +66,15 @@ public class DrivetrainSubsystem extends SubsystemBase
         right = new SpeedControllerGroup(rightMaster, rightFront, rightRear);
 
         drive = new DifferentialDrive(left, right);
+
+        RobotContainer.setTalonFXOrchestra(new Orchestra(new LinkedList<TalonFX>() {{
+            add(leftMaster);
+            add(leftFront);
+            add(leftRear);
+            add(rightMaster);
+            add(rightFront);
+            add(rightRear);
+        }}));
     }
 
     private void configureMotors()
