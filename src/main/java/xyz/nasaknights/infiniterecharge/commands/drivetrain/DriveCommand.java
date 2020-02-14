@@ -44,7 +44,7 @@ public class DriveCommand extends CommandBase
         {
             case GTA:
                 throttle = leftTrigger - rightTrigger;
-                turn = rightXAxis;
+                turn = rightXAxis * -1;
                 break;
             case STICKS:
                 throttle = leftYAxis;
