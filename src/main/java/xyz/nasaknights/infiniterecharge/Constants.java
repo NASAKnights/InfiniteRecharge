@@ -18,8 +18,8 @@ public final class Constants
 
     // Intake Constants
     public static final int INTAKE_VICTOR = 9;
-    public static final int INTAKE_FORWARD_CHANNEL = 5;
-    public static final int INTAKE_REVERSE_CHANNEL = 6;
+    public static final int INTAKE_FORWARD_CHANNEL = 3;
+    public static final int INTAKE_REVERSE_CHANNEL = 4;
 
     public static final int PCM_ID = 40;
 
