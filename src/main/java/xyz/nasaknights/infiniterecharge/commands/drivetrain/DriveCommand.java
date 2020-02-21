@@ -35,6 +35,7 @@ public class DriveCommand extends CommandBase
 
         double leftTrigger = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, LEFT_TRIGGER.getID());
         double rightTrigger = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, RIGHT_TRIGGER.getID());
+        double leftXAxis = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, LEFT_X_AXIS.getID());
 
         double leftYAxis = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, LEFT_Y_AXIS.getID());
         double rightXAxis = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, RIGHT_X_AXIS.getID());
@@ -43,8 +44,8 @@ public class DriveCommand extends CommandBase
         switch (RobotContainer.getProfile().getControlType())
         {
             case GTA:
-                throttle = leftTrigger - rightTrigger;
-                turn = rightXAxis * -1;
+                throttle = rightTrigger - leftTrigger;
+                turn = leftXAxis * -1;
                 break;
             case STICKS:
                 throttle = leftYAxis;
