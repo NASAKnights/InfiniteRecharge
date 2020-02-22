@@ -7,6 +7,7 @@
 
 package xyz.nasaknights.infiniterecharge;
 
+import com.team319.ui.BobTrajectoryApp;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -28,6 +29,7 @@ public final class Main
      */
     public static void main(String... args)
     {
+//        new BobTrajectoryApp();
         RobotBase.startRobot(Robot::new);
     }
 }

@@ -51,6 +51,7 @@ public enum DriverProfile
     public enum ControlType
     {
         GTA,
+        GTA_REVERSED,
         STICKS
     }
 
