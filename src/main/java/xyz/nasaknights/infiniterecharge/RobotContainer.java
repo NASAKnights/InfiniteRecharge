@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
 import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
+import xyz.nasaknights.infiniterecharge.subsystems.IntakeSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.ShooterSubsystem;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
@@ -16,6 +17,9 @@ public class RobotContainer
 {
     private static final Compressor compressor = new Compressor(Constants.PCM_ID);
 
+    private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+    private static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  
     private static DriverProfile profile;
     private static Joystick driver = new Joystick(Constants.DRIVER_ID);
     private static Joystick operator = new Joystick(Constants.OPERATOR_ID);
@@ -74,6 +78,11 @@ public class RobotContainer
         return drivetrainSubsystem;
     }
 
+    public static IntakeSubsystem getIntake()
+    {
+        return intakeSubsystem;
+    }
+  
     public static void initIMU()
     {
         navx = new AHRS(Constants.IMU_PORT);

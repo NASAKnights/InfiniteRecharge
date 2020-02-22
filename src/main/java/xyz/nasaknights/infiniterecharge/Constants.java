@@ -17,15 +17,19 @@ public final class Constants
     public static final int RIGHT_FRONT = 5;
     public static final int RIGHT_REAR = 6;
 
-    public static final int PCM_ID = 40;
+    // Intake Constants
+    public static final int INTAKE_VICTOR = 9;
+    public static final int INTAKE_FORWARD_CHANNEL = 3;
+    public static final int INTAKE_REVERSE_CHANNEL = 4;
 
+    public static final int PCM_ID = 40;
+  
     public static final int PDP_ID = 20;
 
     public static final SPI.Port IMU_PORT = SPI.Port.kMXP;
 
     public static final int LEFT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID = 1;
     public static final int RIGHT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID = 0;
-
 
     // Shooter Constants
     /**
@@ -62,6 +66,4 @@ public final class Constants
 
     // Driver Constants
     public static final DriverProfile CURRENT_DRIVER_PROFILE = DriverProfile.BH;
-
-
 }

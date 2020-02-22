@@ -69,6 +69,7 @@ public class Robot extends TimedRobot
     public void teleopInit()
     {
         RobotContainer.getDrivetrain().getDefaultCommand().schedule();
+        RobotContainer.getIntake().getDefaultCommand().schedule();
     }
 
     @Override

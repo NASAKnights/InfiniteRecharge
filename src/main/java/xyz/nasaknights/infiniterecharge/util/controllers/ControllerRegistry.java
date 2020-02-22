@@ -48,6 +48,9 @@ public class ControllerRegistry
             operator = new NKJoystick(port, DriverProfile.DEFAULT);
 
             // TODO Add button init here
+
+            // new JoystickButton(operator, PS4ControllerMappings.X.getID()).whileHeld(new IntakeCommand());
+
         } catch (PortAlreadyAllocatedException e)
         {
             System.out.println(e.getMessage());
@@ -67,8 +70,7 @@ public class ControllerRegistry
 
     public enum ControllerAssignment
     {
-        DRIVER,
-        OPERATOR
+        DRIVER, OPERATOR
     }
 
     static class PortAlreadyAllocatedException extends Exception
