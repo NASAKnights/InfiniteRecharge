@@ -5,10 +5,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.vision.VisionClient;
 
 public class RobotContainer
 {
     private static final Compressor compressor = new Compressor(Constants.PCM_ID);
+
+    private static VisionClient visionClient;
 
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
 
@@ -55,6 +58,24 @@ public class RobotContainer
     public static void setProfile(DriverProfile profile)
     {
         RobotContainer.profile = profile;
+    }
+
+    public static VisionClient getVisionClient()
+    {
+
+        if (visionClient == null)
+        {
+            try
+            {
+                visionClient = new VisionClient();
+            } catch (VisionClient.VisionClientInitializationException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        return visionClient;
+
     }
 
     public static DrivetrainSubsystem getDrivetrain()

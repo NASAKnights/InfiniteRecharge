@@ -18,5 +18,9 @@ public final class Constants
 
     public static final int PCM_ID = 40;
 
+    // Vision Constants
+    public static final String VISION_CLIENT_IP_ADDRESS = "10.1.22.43";
+    public static final int VISION_CLIENT_PORT = 6969;
+
     public static final DriverProfile CURRENT_DRIVER_PROFILE = DriverProfile.DEFAULT;
 }
