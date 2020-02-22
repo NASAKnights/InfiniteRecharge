@@ -1,14 +1,12 @@
 package xyz.nasaknights.infiniterecharge;
 
 import com.team2363.logger.HelixEvents;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.PathFollowCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.paths.ThreeByThree;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.paths.ThreeFeetForward;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 public class Robot extends TimedRobot
@@ -70,6 +68,9 @@ public class Robot extends TimedRobot
     {
         RobotContainer.getDrivetrain().getDefaultCommand().schedule();
         RobotContainer.getIntake().getDefaultCommand().schedule();
+
+        RobotContainer.getQueuerSubsystem().setBeltPower(.5);
+        RobotContainer.getQueuerSubsystem().setQueuerIntakePower(.1);
     }
 
     @Override

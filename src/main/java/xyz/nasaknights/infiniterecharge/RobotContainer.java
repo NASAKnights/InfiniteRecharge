@@ -8,6 +8,7 @@ import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
 import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.IntakeSubsystem;
+import xyz.nasaknights.infiniterecharge.subsystems.QueuerSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.ShooterSubsystem;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
@@ -20,6 +21,7 @@ public class RobotContainer
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
     private static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    private static final QueuerSubsystem queuerSubsystem = new QueuerSubsystem();
 
     private static DriverProfile profile;
     private static Joystick driver = new Joystick(Constants.DRIVER_ID);
@@ -99,6 +101,11 @@ public class RobotContainer
     public static ShooterSubsystem getShooterSubsystem()
     {
         return shooterSubsystem;
+    }
+
+    public static QueuerSubsystem getQueuerSubsystem()
+    {
+        return queuerSubsystem;
     }
 
     private void configureButtonBindings()

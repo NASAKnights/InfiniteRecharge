@@ -13,12 +13,14 @@ public class ShootCommand extends CommandBase
     @Override
     public void execute()
     {
-        RobotContainer.getShooterSubsystem().set(0.50);
+        RobotContainer.getQueuerSubsystem().setQueuerIntakePower(.75);
+        RobotContainer.getShooterSubsystem().set(0.8);
     }
 
     @Override
     public void end(boolean interrupted)
     {
+        RobotContainer.getQueuerSubsystem().setQueuerIntakePower(.1);
         RobotContainer.getShooterSubsystem().set(0);
     }
 

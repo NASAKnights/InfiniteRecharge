@@ -1,7 +1,5 @@
 package xyz.nasaknights.infiniterecharge.subsystems;
 
-import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
-import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -12,22 +10,13 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.Constants;
-import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.VisionDriveAssistCommand;
 import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
-
-import java.nio.Buffer;
-import java.util.function.Supplier;
 
 /**
  * <p>The programmatic representation of the drivetrain, which consists of six Falcon 500 motors as the drive motors,
@@ -182,8 +171,8 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     private void initPneumatics()
     {
-        driveGearShifter = new Solenoid(Constants.PCM_ID, Constants.SINGLE_DRIVE_GEAR_CHANNEL);
-        powerTakeoffShifter = new DoubleSolenoid(Constants.PCM_ID, Constants.FORWARD_POWER_TAKEOFF_CHANNEL, Constants.REVERSE_POWER_TAKEOFF_CHANNEL);
+        driveGearShifter = new Solenoid(Constants.PCM_ID, Constants.DRIVETRAIN_GEAR_SHIFTER_CHANNEL);
+        //powerTakeoffShifter = new DoubleSolenoid(Constants.PCM_ID, Constants.FORWARD_POWER_TAKEOFF_CHANNEL, Constants.REVERSE_POWER_TAKEOFF_CHANNEL); // TODO Enable once added
     }
 
     public void setHighGear(boolean highGear)

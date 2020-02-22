@@ -9,30 +9,4 @@ public class DrivetrainShiftCommand extends InstantCommand
     {
         super(() -> RobotContainer.getDrivetrain().setHighGear(!RobotContainer.getDrivetrain().isDriveInHighGear()));
     }
-
-//    boolean done = false;
-//
-//    public DrivetrainShiftCommand()
-//    {
-//        System.out.println("Attempting shift");
-//    }
-//
-//    @Override
-//    public void initialize()
-//    {
-//        RobotContainer.getDrivetrain().setHighGear(!RobotContainer.getDrivetrain().isDriveInHighGear());
-//        done = true;
-//    }
-//
-//    @Override
-//    public void execute()
-//    {
-//
-//    }
-//
-//    @Override
-//    public boolean isFinished()
-//    {
-//        return done;
-//    }
 }
