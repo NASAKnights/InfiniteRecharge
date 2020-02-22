@@ -83,6 +83,10 @@ public class DrivetrainSubsystem extends SubsystemBase
     private DoubleSolenoid.Value climbGear = DoubleSolenoid.Value.kForward;
     private DoubleSolenoid.Value driveGear = DoubleSolenoid.Value.kReverse;
 
+    private double maxThrottle, maxTurn;
+
+    private DrivetrainSpeedState speedState = DrivetrainSpeedState.FULL_SPEED;
+
     public DrivetrainSubsystem()
     {
         initMotors(); // set up motors
@@ -90,9 +94,30 @@ public class DrivetrainSubsystem extends SubsystemBase
 
         drive.setSafetyEnabled(false);
 
-//        leftNeutralServo = new Servo(Constants.LEFT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
-//        rightNeutralServo = new Servo(Constants.RIGHT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
-//        testServo = new Servo(2);
+        //        leftNeutralServo = new Servo(Constants.LEFT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
+        //        rightNeutralServo = new Servo(Constants.RIGHT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
+        //        testServo = new Servo(2);
+    }
+
+    public void setMaxSpeeds(double maxThrottle, double maxTurn)
+    {
+        this.maxThrottle = maxThrottle;
+        this.maxTurn = maxTurn;
+    }
+
+    public void toggleMaxSpeeds()
+    {
+        if (speedState == DrivetrainSpeedState.FULL_SPEED)
+        {
+            maxThrottle /= 2;
+            maxTurn *= 2;
+            speedState = DrivetrainSpeedState.HALF_SPEED;
+        } else
+        {
+            maxThrottle *= 2;
+            maxTurn *= 2;
+            speedState = DrivetrainSpeedState.FULL_SPEED;
+        }
     }
 
     @Override
@@ -302,6 +327,11 @@ public class DrivetrainSubsystem extends SubsystemBase
      */
     public void setDrivetrainNeutral(boolean isNeutral)
     {
-//        System.out.println("Test Raw: " + testServo.getRaw() + "; Test Angle: " + testServo.getAngle());
+        //        System.out.println("Test Raw: " + testServo.getRaw() + "; Test Angle: " + testServo.getAngle());
+    }
+
+    public enum DrivetrainSpeedState
+    {
+        FULL_SPEED, HALF_SPEED
     }
 }
