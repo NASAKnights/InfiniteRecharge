@@ -5,49 +5,29 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.Constants;
-import xyz.nasaknights.infiniterecharge.commands.intake.AxisIntakeCommand;
+import xyz.nasaknights.infiniterecharge.commands.intake.VariableSpeedIntakeCommand;
 import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_VictorSPX;
+import xyz.nasaknights.infiniterecharge.util.control.pneumatics.Lazy_DoubleSolenoid;
 
 public class IntakeSubsystem extends SubsystemBase
 {
     private static final DoubleSolenoid.Value DEPLOYED_INTAKE = DoubleSolenoid.Value.kForward;
     private static final DoubleSolenoid.Value RETRACTED_INTAKE = DoubleSolenoid.Value.kReverse;
     Lazy_VictorSPX intake;
-    double defaultSpeed;
-    DoubleSolenoid doubleSolenoid;
+    Lazy_DoubleSolenoid doubleSolenoid;
 
     public IntakeSubsystem()
     {
-        initMotor();
-        initPneumatics();
-    }
-
-    private void initMotor()
-    {
         intake = new Lazy_VictorSPX(Constants.INTAKE_VICTOR);
+        doubleSolenoid = new Lazy_DoubleSolenoid(Constants.PCM_ID, Constants.INTAKE_FORWARD_CHANNEL, Constants.INTAKE_REVERSE_CHANNEL);
     }
 
-    public void intake()
-    {
-        intake(defaultSpeed);
-    }
-
-    public void intake(double power)
+    public void setIntakePower(double power)
     {
         intake.set(ControlMode.PercentOutput, power);
     }
 
-    private void setDefaultSpeed(double speed)
-    {
-        defaultSpeed = speed;
-    }
-
-    private void initPneumatics()
-    {
-        doubleSolenoid = new DoubleSolenoid(Constants.PCM_ID, Constants.INTAKE_FORWARD_CHANNEL, Constants.INTAKE_REVERSE_CHANNEL);
-    }
-
-    public boolean getIntakeExtended()
+    public boolean isIntakeExtended()
     {
         return doubleSolenoid.get() == DEPLOYED_INTAKE;
     }
@@ -60,6 +40,6 @@ public class IntakeSubsystem extends SubsystemBase
     @Override
     public Command getDefaultCommand()
     {
-        return new AxisIntakeCommand();
+        return new VariableSpeedIntakeCommand();
     }
 }

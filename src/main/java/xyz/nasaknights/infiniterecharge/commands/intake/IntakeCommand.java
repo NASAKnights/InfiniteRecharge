@@ -5,34 +5,29 @@ import xyz.nasaknights.infiniterecharge.RobotContainer;
 
 public class IntakeCommand extends CommandBase
 {
-    public IntakeCommand()
+    double speed;
+
+    public IntakeCommand(double speed)
     {
-        addRequirements(RobotContainer.getIntake());
+        this.speed = speed;
     }
 
     @Override
     public void initialize()
     {
-        if (!RobotContainer.getIntake().getIntakeExtended())
-            RobotContainer.getIntake().setIntakeExtended(true);
+        RobotContainer.getIntake().setIntakeExtended(true);
     }
 
     @Override
     public void execute()
     {
-        RobotContainer.getIntake().intake();
+        RobotContainer.getIntake().setIntakePower(speed);
     }
 
     @Override
     public void end(boolean interrupted)
     {
-        if (RobotContainer.getIntake().getIntakeExtended())
-            RobotContainer.getIntake().setIntakeExtended(false);
-    }
-
-    @Override
-    public boolean isFinished()
-    {
-        return false;
+        RobotContainer.getIntake().setIntakeExtended(false);
+        RobotContainer.getIntake().setIntakePower(0);
     }
 }
