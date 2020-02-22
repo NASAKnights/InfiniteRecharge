@@ -1,6 +1,8 @@
 package xyz.nasaknights.infiniterecharge.util.controllers;
 
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import xyz.nasaknights.infiniterecharge.Constants;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.DrivetrainShiftCommand;
 
 public class ControllerRegistry
 {
@@ -25,6 +27,8 @@ public class ControllerRegistry
             doesDriverWantSquaredInputs = profile.doesWantSquaredInputs();
 
             // TODO Add button init here
+            
+            new JoystickButton(driver, PS4ControllerMappings.SQUARE.getID()).whenPressed(new DrivetrainShiftCommand());
         } catch (PortAlreadyAllocatedException e)
         {
             System.out.println(e.getMessage());
