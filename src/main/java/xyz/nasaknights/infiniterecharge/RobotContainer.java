@@ -16,13 +16,13 @@ public class RobotContainer
 {
     private static final Compressor compressor = new Compressor(Constants.PCM_ID);
 
-    private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
-    private static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-
     private static DriverProfile profile;
     private static Joystick driver = new Joystick(Constants.DRIVER_ID);
     private static Joystick operator = new Joystick(Constants.OPERATOR_ID);
-    private static AHRS navx;
+    private static AHRS navx = new AHRS(Constants.IMU_PORT);
+
+    private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+    private static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
     public RobotContainer()
     {

@@ -1,20 +1,33 @@
 package xyz.nasaknights.infiniterecharge.subsystems;
 
+import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
+import com.ctre.phoenix.motion.TrajectoryPoint;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.Constants;
+import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.VisionDriveAssistCommand;
 import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
+
+import java.nio.Buffer;
+import java.util.function.Supplier;
 
 /**
  * <p>The programmatic representation of the drivetrain, which consists of six Falcon 500 motors as the drive motors,
@@ -33,6 +46,7 @@ import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX
  */
 public class DrivetrainSubsystem extends SubsystemBase
 {
+
     //a configuration for the TalonFX motor controllers
     private TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration()
     {{
@@ -58,16 +72,20 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     }};
 
-    private SpeedControllerGroup left, right;
+    private SpeedControllerGroup left, right; // Speed Controller groups that include all motors on left and right sides (init. in constructor)
 
-    private DifferentialDrive drive; // differential drive for ease of coding with West Coast drivetrains
+    private DifferentialDrive drive;
 
-    private Lazy_WPI_TalonFX leftMaster, // left master TalonFX
-            leftFront, // left front TalonFX
-            leftRear, // left rear TalonFX
-            rightMaster, // right master TalonFX
-            rightFront, // right front TalonFX
-            rightRear; // right rear TalonFX
+    private Lazy_WPI_TalonFX leftMaster,
+            leftFront,
+            leftRear,
+            rightMaster,
+            rightFront,
+            rightRear;
+
+    private Servo leftNeutralServo;
+    private Servo rightNeutralServo;
+    private Servo testServo;
 
     private Solenoid driveGearShifter;
     private DoubleSolenoid powerTakeoffShifter;
@@ -80,6 +98,12 @@ public class DrivetrainSubsystem extends SubsystemBase
     {
         initMotors(); // set up motors
         initPneumatics(); // set up solenoids
+
+        drive.setSafetyEnabled(false);
+
+//        leftNeutralServo = new Servo(Constants.LEFT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
+//        rightNeutralServo = new Servo(Constants.RIGHT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
+//        testServo = new Servo(2);
     }
 
     @Override
@@ -141,6 +165,7 @@ public class DrivetrainSubsystem extends SubsystemBase
         StatorCurrentLimitConfiguration climbStator = new StatorCurrentLimitConfiguration()
         {{
             enable = true; //enables current limiting
+
             currentLimit = 8; // 20 percent power
             triggerThresholdCurrent = 8; //starts limit at 20 percent power
             triggerThresholdTime = 0; //starts limiting 0 seconds after threshold current is reached
@@ -171,7 +196,7 @@ public class DrivetrainSubsystem extends SubsystemBase
         powerTakeoffShifter.set(extended ? climbGear : driveGear);
     }
 
-    public boolean isDriveAtHighGear()
+    public boolean isDriveInHighGear()
     {
         return driveGearShifter.get();
     }
@@ -184,6 +209,110 @@ public class DrivetrainSubsystem extends SubsystemBase
     @Override
     public void periodic()
     {
+    }
 
+    /**
+     * Defaults both the leftMaster and rightMaster encoder values to zero.
+     *
+     * @author Bradley Hooten (hello@bradleyh.me)
+     */
+    public void resetEncoders()
+    {
+        leftMaster.getSensorCollection().setIntegratedSensorPosition(0, 10);
+        rightMaster.getSensorCollection().setIntegratedSensorPosition(0, 10);
+    }
+
+    public double getLeftEncoderPosition()
+    {
+        System.out.println("LEFT ENCODER: " + leftMaster.getSensorCollection().getIntegratedSensorPosition());
+        return leftMaster.getSensorCollection().getIntegratedSensorPosition();
+    }
+
+    public double getRightEncoderPosition()
+    {
+        System.out.println("RIGHT ENCODER: " + rightMaster.getSensorCollection().getIntegratedSensorPosition());
+        return rightMaster.getSensorCollection().getIntegratedSensorPosition();
+    }
+
+    /**
+     * Sets the drivetrain motor percentages by side.
+     *
+     * @param left Target percentage output of the left side
+     * @param right Target percentage output of the right side
+     * @author Bradley Hooten (hello@bradleyh.me)
+     */
+    public void setMotorPercents(double left, double right)
+    {
+        System.out.println("LEFT: " + left + "; RIGHT: " + right);
+
+//        if(left >= .4)
+//        {
+//            left = .4;
+//        }
+//        else if(left <= .4)
+//        {
+//            left = -.4;
+//        }
+//
+//        if(right >= .4)
+//        {
+//            right = .4;
+//        }
+//        else if(right <= -.4)
+//        {
+//            right = -.4;
+//        }
+
+        leftMaster.set(ControlMode.PercentOutput, left);
+        leftFront.set(ControlMode.PercentOutput, left);
+        leftRear.set(ControlMode.PercentOutput, left);
+
+        rightMaster.set(ControlMode.PercentOutput, right);
+        rightFront.set(ControlMode.PercentOutput, right);
+        rightRear.set(ControlMode.PercentOutput, right);
+    }
+
+    /**
+     * Clears any faults on the drivetrain motors.
+     *
+     * @author Bradley Hooten (hello@bradleyh.me)
+     */
+    public void clearFaults()
+    {
+        leftMaster.clearStickyFaults();
+        leftFront.clearStickyFaults();
+        leftRear.clearStickyFaults();
+
+        rightMaster.clearStickyFaults();
+        rightFront.clearStickyFaults();
+        rightRear.clearStickyFaults();
+    }
+
+    /**
+     * Stops all of the motors on the drivetrain.
+     *
+     * @author Bradley Hooten (hello@bradleyh.me)
+     */
+    public void stopAllMotors()
+    {
+        leftMaster.set(ControlMode.PercentOutput, 0);
+        leftFront.set(ControlMode.PercentOutput, 0);
+        leftRear.set(ControlMode.PercentOutput, 0);
+
+        rightMaster.set(ControlMode.PercentOutput, 0);
+        rightFront.set(ControlMode.PercentOutput, 0);
+        rightRear.set(ControlMode.PercentOutput, 0);
+    }
+
+    /**
+     * This method toggles the neutrality of the drivetrain. This should be used to shift control to the climber for
+     * the endgame period.
+     *
+     * @author Bradley Hooten (hello@bradleyh.me)
+     * @param isNeutral Boolean specifying whether the drivetrain should be set to neutral or not
+     */
+    public void setDrivetrainNeutral(boolean isNeutral)
+    {
+//        System.out.println("Test Raw: " + testServo.getRaw() + "; Test Angle: " + testServo.getAngle());
     }
 }
