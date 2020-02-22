@@ -11,12 +11,6 @@ public class ShootCommand extends CommandBase
     }
 
     @Override
-    public void initialize()
-    {
-
-    }
-
-    @Override
     public void execute()
     {
         RobotContainer.getShooterSubsystem().set(0.50);
@@ -25,7 +19,7 @@ public class ShootCommand extends CommandBase
     @Override
     public void end(boolean interrupted)
     {
-
+        RobotContainer.getShooterSubsystem().set(0);
     }
 
     @Override
