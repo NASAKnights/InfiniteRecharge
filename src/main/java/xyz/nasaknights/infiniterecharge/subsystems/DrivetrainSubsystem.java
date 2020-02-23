@@ -128,12 +128,12 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     public void arcadeDrive(double throttle, double turn, boolean squaredInputs)
     {
-        drive.arcadeDrive(throttle, turn, squaredInputs);
+        drive.arcadeDrive(throttle * maxThrottle, turn * maxTurn, squaredInputs);
     }
 
     public void curvatureDrive(double throttle, double turn, boolean isQuickTurn)
     {
-        drive.curvatureDrive(throttle, turn, isQuickTurn);
+        drive.curvatureDrive(throttle * maxThrottle, turn * maxTurn, isQuickTurn);
     }
 
     private void initMotors()
