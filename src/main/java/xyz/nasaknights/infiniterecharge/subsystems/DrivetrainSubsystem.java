@@ -1,21 +1,13 @@
 package xyz.nasaknights.infiniterecharge.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.Constants;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.VisionDriveAssistCommand;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.*;
 import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
 
 /**
@@ -63,8 +55,9 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     private SpeedControllerGroup left, right; // Speed Controller groups that include all motors on left and right sides (init. in constructor)
 
-    private DifferentialDrive drive;
+    private DifferentialDrive drive; // standard library drive for West Coast drivetrains
 
+    // declarations of the motor controllers
     private Lazy_WPI_TalonFX leftMaster,
             leftFront,
             leftRear,
@@ -72,10 +65,12 @@ public class DrivetrainSubsystem extends SubsystemBase
             rightFront,
             rightRear;
 
+    // servo declarations
     private Servo leftNeutralServo;
     private Servo rightNeutralServo;
     private Servo testServo;
 
+    // solenoid delcarations
     private Solenoid driveGearShifter;
     private DoubleSolenoid powerTakeoffShifter;
 
@@ -83,10 +78,15 @@ public class DrivetrainSubsystem extends SubsystemBase
     private DoubleSolenoid.Value climbGear = DoubleSolenoid.Value.kForward;
     private DoubleSolenoid.Value driveGear = DoubleSolenoid.Value.kReverse;
 
+    // some utilities for changing the max speeds of the drivetrain
     private double maxThrottle, maxTurn;
 
+    // enumerator for keeping track of the default max speeds, defaulted to FULL_SPEED
     private DrivetrainSpeedState speedState = DrivetrainSpeedState.FULL_SPEED;
 
+    /**
+     * Constructor for the {@link DrivetrainSubsystem} class.
+     */
     public DrivetrainSubsystem()
     {
         initMotors(); // set up motors
@@ -99,18 +99,27 @@ public class DrivetrainSubsystem extends SubsystemBase
         //        testServo = new Servo(2);
     }
 
+    /**
+     * Sets the max speeds of the drivetrain.
+     *
+     * @param maxThrottle Max forward and backwards speed
+     * @param maxTurn     Max rotational speed
+     */
     public void setMaxSpeeds(double maxThrottle, double maxTurn)
     {
         this.maxThrottle = maxThrottle;
         this.maxTurn = maxTurn;
     }
 
+    /**
+     * Toggles the max speeds of drivetrain motion between full and reduced speed (currently half).
+     */
     public void toggleMaxSpeeds()
     {
         if (speedState == DrivetrainSpeedState.FULL_SPEED)
         {
             maxThrottle /= 2;
-            maxTurn *= 2;
+            maxTurn /= 2;
             speedState = DrivetrainSpeedState.HALF_SPEED;
         } else
         {
@@ -120,12 +129,24 @@ public class DrivetrainSubsystem extends SubsystemBase
         }
     }
 
+    /**
+     * Makes a new instance the default drive command, {@link DriveCommand}.
+     *
+     * @return A {@link DriveCommand}
+     */
     @Override
     public Command getDefaultCommand()
     {
         return new DriveCommand();
     }
 
+    /**
+     * Drives the robot in arcade drive.
+     *
+     * @param throttle      forwards and backwards speed
+     * @param turn          rotational speed
+     * @param squaredInputs if true will square the inputs from the source for more control at lower speeds
+     */
     public void arcadeDrive(double throttle, double turn, boolean squaredInputs)
     {
         drive.arcadeDrive(throttle * maxThrottle, turn * maxTurn, squaredInputs);

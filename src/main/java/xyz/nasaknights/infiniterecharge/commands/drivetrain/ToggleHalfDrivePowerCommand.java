@@ -7,6 +7,10 @@ public class ToggleHalfDrivePowerCommand extends InstantCommand
 {
     public ToggleHalfDrivePowerCommand()
     {
-        super(() -> RobotContainer.getDrivetrain().toggleMaxSpeeds(), RobotContainer.getDrivetrain());
+        super(() ->
+        {
+            RobotContainer.getDrivetrain().toggleMaxSpeeds();
+            System.out.println("Switched max drive speeds");
+        }, RobotContainer.getDrivetrain());
     }
 }
