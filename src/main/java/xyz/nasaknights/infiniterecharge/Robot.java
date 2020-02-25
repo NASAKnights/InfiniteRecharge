@@ -38,6 +38,8 @@ public class Robot extends TimedRobot
 //        RobotContainer.getDrivetrain().setTurnP(SmartDashboard.getNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP()));
 //        RobotContainer.getDrivetrain().setTurnI(SmartDashboard.getNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI()));
 //        RobotContainer.getDrivetrain().setTurnD(SmartDashboard.getNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD()));
+
+        RobotContainer.getIntake().setIntakeExtended(false);
     }
     @Override
     public void disabledInit()
@@ -66,11 +68,13 @@ public class Robot extends TimedRobot
     @Override
     public void teleopInit()
     {
+        RobotContainer.getIntake().setIntakeExtended(false);
         RobotContainer.getDrivetrain().getDefaultCommand().schedule();
         RobotContainer.getIntake().getDefaultCommand().schedule();
 
         RobotContainer.getQueuerSubsystem().setBeltPower(.5);
-        RobotContainer.getQueuerSubsystem().setQueuerIntakePower(.1);
+
+        RobotContainer.getShooterSubsystem().setHoodExtended(true);
     }
 
     @Override
@@ -95,10 +99,5 @@ public class Robot extends TimedRobot
     {
         SmartDashboard.putNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get());
         RobotContainer.getShooterSubsystem().set(SmartDashboard.getNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get()));
-    }
-
-    public static DriveCommand getDriveCommand()
-    {
-        return driveCommand;
     }
 }
