@@ -3,16 +3,12 @@ package xyz.nasaknights.infiniterecharge;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
-import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.IntakeSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.QueuerSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.ShooterSubsystem;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
-import xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings;
 
 public class RobotContainer
 {
@@ -31,8 +27,7 @@ public class RobotContainer
     public RobotContainer()
     {
         ControllerRegistry.setupDriverJoystick(Constants.DRIVER_ID, Constants.CURRENT_DRIVER_PROFILE);
-
-        configureButtonBindings();
+        ControllerRegistry.setupOperatorJoystick(Constants.OPERATOR_ID, Constants.CURRENT_DRIVER_PROFILE);
 
         compressor.setClosedLoopControl(true);
         compressor.start();
@@ -106,13 +101,6 @@ public class RobotContainer
     public static QueuerSubsystem getQueuerSubsystem()
     {
         return queuerSubsystem;
-    }
-
-    private void configureButtonBindings()
-    {
-        new JoystickButton(driver, PS4ControllerMappings.RIGHT_JOYSTICK.getID()).whenPressed(new DriveToAngleCommand(0.0));
-
-        new JoystickButton(operator, PS4ControllerMappings.X.getID()).whileHeld(new ShootCommand());
     }
 
     //    public Command getAutonomousCommand()

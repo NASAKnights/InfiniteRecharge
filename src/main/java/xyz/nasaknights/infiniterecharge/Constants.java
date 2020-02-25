@@ -11,15 +11,15 @@ public final class Constants
     ///////////////////////////////////////////////////////////////////////////////
 
     // Shooter Subsystem
-    public static final short LEFT_SHOOTER_SPARK_MAX = 6;
-    public static final short RIGHT_SHOOTER_SPARK_MAX = 7;
+    public static final short LEFT_SHOOTER_SPARK_MAX = 7;
+    public static final short RIGHT_SHOOTER_SPARK_MAX = 8;
 
     // Queuer Subsystem
-    public static final short RIGHT_BELT_VICTOR_ID = 10;
-    public static final short LEFT_BELT_VICTOR_ID = 11;
+    public static final short RIGHT_BELT_VICTOR_ID = 11;
+    public static final short LEFT_BELT_VICTOR_ID = 12;
 
     // Queuer Subsystem - Intake: for clarification, this moves the ball from the queuer into the shooter
-    public static final short QUEUER_INTAKE_VICTOR = 9;
+    public static final short SHOOTER_FEEDER_VICTOR = 10;
 
     // Drivetrain
     public static final int LEFT_MASTER = 1;
@@ -43,11 +43,14 @@ public final class Constants
     ///////////////////////////////////////////////////////////////////////////////
 
     // Pneumatic Control Module
-    public static final int PCM_ID = 40;
+    public static final short PCM_ID = 40;
 
     // Intake Subsystem PCM IDs
-    public static final int INTAKE_FORWARD_CHANNEL = 3;
-    public static final int INTAKE_REVERSE_CHANNEL = 4;
+    public static final short INTAKE_FORWARD_CHANNEL = 3;
+    public static final short INTAKE_REVERSE_CHANNEL = 4;
+
+    public static final short HOOD_FORWARD_CHANNEL = 2;
+    public static final short HOOD_REVERSE_CHANNEL = 5;
 
     // Drivetrain Subsystem PCM IDs
     public static final short DRIVETRAIN_GEAR_SHIFTER_CHANNEL = 0;
@@ -65,7 +68,7 @@ public final class Constants
     public static final DriverProfile CURRENT_DRIVER_PROFILE = DriverProfile.BH;
 
     // CAN ID for Power Distribution Panel
-    public static final int PDP_ID = 20;
+    public static final int PDP_ID = 0;
 
     // SPI Port for NavX
     public static final SPI.Port IMU_PORT = SPI.Port.kMXP;

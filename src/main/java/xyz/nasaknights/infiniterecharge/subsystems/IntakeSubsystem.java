@@ -19,6 +19,7 @@ public class IntakeSubsystem extends SubsystemBase
     public IntakeSubsystem()
     {
         intake = new Lazy_VictorSPX(Constants.INTAKE_VICTOR);
+        intake.setInverted(true);
         doubleSolenoid = new Lazy_DoubleSolenoid(Constants.PCM_ID, Constants.INTAKE_FORWARD_CHANNEL, Constants.INTAKE_REVERSE_CHANNEL);
     }
 
