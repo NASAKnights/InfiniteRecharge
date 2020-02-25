@@ -22,6 +22,7 @@ public class Robot extends TimedRobot
     {
         robotContainer = new RobotContainer();
         RobotContainer.setProfile(driverProfile);
+        RobotContainer.getDrivetrain().setMaxSpeeds(driverProfile.getMaxThrottle(), driverProfile.getMaxTurn());
         driveCommand.schedule(); // schedules a Drive Command which cannot be interruptible
     }
 
