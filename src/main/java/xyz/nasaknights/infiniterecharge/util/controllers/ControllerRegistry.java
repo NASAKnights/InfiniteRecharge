@@ -34,8 +34,8 @@ public class ControllerRegistry
 
         // TODO Add button init here
 
-        new JoystickButton(operator, PS4ControllerMappings.LEFT_BUMPER.getID()).whileHeld(new IntakeCommand(.75));
-        new JoystickButton(operator, PS4ControllerMappings.RIGHT_BUMPER.getID()).whileHeld(new ShootCommand());
+        new JoystickButton(operator, PS4ControllerMappings.LEFT_BUMPER.getID()).whileHeld(new IntakeCommand(1));
+        new JoystickButton(operator, PS4ControllerMappings.RIGHT_BUMPER.getID()).whileHeld(new ShootCommand(), true);
 
         new JoystickButton(operator, PS4ControllerMappings.SQUARE.getID()).whenPressed(new IntakeExtensionCommand());
         new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whenPressed(new ToggleHoodExtensionCommand());
@@ -54,5 +54,10 @@ public class ControllerRegistry
     public enum ControllerAssignment
     {
         DRIVER, OPERATOR
+    }
+
+    public static boolean isShooterButtonHeld()
+    {
+        return operator.getRawButton(PS4ControllerMappings.RIGHT_BUMPER.getID());
     }
 }

@@ -11,8 +11,8 @@ public final class Constants
     ///////////////////////////////////////////////////////////////////////////////
 
     // Shooter Subsystem
-    public static final short LEFT_SHOOTER_SPARK_MAX = 7;
-    public static final short RIGHT_SHOOTER_SPARK_MAX = 8;
+    public static final short LEFT_SHOOTER_TALON_FX = 7;
+    public static final short RIGHT_SHOOTER_TALON_FX = 8;
 
     // Queuer Subsystem
     public static final short RIGHT_BELT_VICTOR_ID = 11;
