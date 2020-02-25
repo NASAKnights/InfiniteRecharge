@@ -43,4 +43,9 @@ public class IntakeSubsystem extends SubsystemBase
     {
         return new VariableSpeedIntakeCommand();
     }
+
+    public void toggleIntakeExtended()
+    {
+        doubleSolenoid.set((doubleSolenoid.get() == DoubleSolenoid.Value.kForward) ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+    }
 }

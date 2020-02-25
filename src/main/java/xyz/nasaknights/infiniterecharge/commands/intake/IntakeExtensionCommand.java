@@ -7,15 +7,11 @@ public class IntakeExtensionCommand extends InstantCommand
 {
     public IntakeExtensionCommand()
     {
-        super(new Runnable()
+        super(() ->
         {
-            @Override
-            public void run()
-            {
-                System.out.println(!RobotContainer.getIntake().isIntakeExtended());
-                RobotContainer.getIntake().setIntakeExtended(!RobotContainer.getIntake().isIntakeExtended());
+            System.out.println("Attempting to toggle intake");
+            RobotContainer.getIntake().toggleIntakeExtended();
 
-            }
         }, RobotContainer.getIntake());
     }
 
