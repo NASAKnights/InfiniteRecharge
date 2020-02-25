@@ -46,4 +46,13 @@ public class ShooterSubsystem extends SubsystemBase
         return shooterMotors.get();
     }
 
+    public boolean getHoodExtended()
+    {
+        return hoodShifter.get() == DoubleSolenoid.Value.kForward;
+    }
+
+    public void toggleHoodExtended()
+    {
+        hoodShifter.set((hoodShifter.get() == DoubleSolenoid.Value.kForward) ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+    }
 }

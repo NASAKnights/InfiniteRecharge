@@ -6,6 +6,7 @@ import xyz.nasaknights.infiniterecharge.commands.drivetrain.DrivetrainShiftComma
 import xyz.nasaknights.infiniterecharge.commands.intake.IntakeCommand;
 import xyz.nasaknights.infiniterecharge.commands.intake.IntakeExtensionCommand;
 import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
+import xyz.nasaknights.infiniterecharge.commands.shooter.ToggleHoodExtensionCommand;
 
 public class ControllerRegistry
 {
@@ -37,6 +38,7 @@ public class ControllerRegistry
         new JoystickButton(operator, PS4ControllerMappings.RIGHT_BUMPER.getID()).whileHeld(new ShootCommand());
 
         new JoystickButton(operator, PS4ControllerMappings.SQUARE.getID()).whenPressed(new IntakeExtensionCommand());
+        new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whenPressed(new ToggleHoodExtensionCommand());
     }
 
     public static double getRawAxis(ControllerAssignment controller, int axisID)

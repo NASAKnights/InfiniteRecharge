@@ -49,8 +49,8 @@ public final class Constants
     public static final short INTAKE_FORWARD_CHANNEL = 3;
     public static final short INTAKE_REVERSE_CHANNEL = 4;
 
-    public static final short HOOD_FORWARD_CHANNEL = 2;
-    public static final short HOOD_REVERSE_CHANNEL = 5;
+    public static final short HOOD_FORWARD_CHANNEL = 5;
+    public static final short HOOD_REVERSE_CHANNEL = 2;
 
     // Drivetrain Subsystem PCM IDs
     public static final short DRIVETRAIN_GEAR_SHIFTER_CHANNEL = 0;
