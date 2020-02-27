@@ -3,6 +3,10 @@ package xyz.nasaknights.infiniterecharge.util.controllers;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import xyz.nasaknights.infiniterecharge.Constants;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DrivetrainShiftCommand;
+import xyz.nasaknights.infiniterecharge.commands.intake.IntakeCommand;
+import xyz.nasaknights.infiniterecharge.commands.intake.IntakeExtensionCommand;
+import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
+import xyz.nasaknights.infiniterecharge.commands.shooter.ToggleHoodExtensionCommand;
 
 public class ControllerRegistry
 {
@@ -11,48 +15,30 @@ public class ControllerRegistry
 
     private static boolean doesDriverWantSquaredInputs;
 
-    private static int driverPort = -1;
-    private static int operatorPort = -2;
+    private static int driverPort = Constants.DRIVER_ID;
+    private static int operatorPort = Constants.OPERATOR_ID;
 
     public static void setupDriverJoystick(int port, DriverProfile profile)
     {
-        try
-        {
-            if (port == driverPort || port == operatorPort)
-            {
-                throw new PortAlreadyAllocatedException(port, "thrown while attempting to init. driver");
-            }
+        driver = new NKJoystick(port, Constants.CURRENT_DRIVER_PROFILE);
+        doesDriverWantSquaredInputs = profile.doesWantSquaredInputs();
 
-            driver = new NKJoystick(port, Constants.CURRENT_DRIVER_PROFILE);
-            doesDriverWantSquaredInputs = profile.doesWantSquaredInputs();
+        // TODO Add button init here
 
-            // TODO Add button init here
-            
-            new JoystickButton(driver, PS4ControllerMappings.SQUARE.getID()).whenPressed(new DrivetrainShiftCommand());
-        } catch (PortAlreadyAllocatedException e)
-        {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
+        new JoystickButton(driver, PS4ControllerMappings.SQUARE.getID()).whenPressed(new DrivetrainShiftCommand());
     }
 
     public static void setupOperatorJoystick(int port, DriverProfile profile)
     {
-        try
-        {
-            if (port == driverPort || port == operatorPort)
-            {
-                throw new PortAlreadyAllocatedException(port, "thrown while attempting to init. operator");
-            }
+        operator = new NKJoystick(port, DriverProfile.DEFAULT);
 
-            operator = new NKJoystick(port, DriverProfile.DEFAULT);
+        // TODO Add button init here
 
-            // TODO Add button init here
-        } catch (PortAlreadyAllocatedException e)
-        {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
+        new JoystickButton(operator, PS4ControllerMappings.LEFT_BUMPER.getID()).whileHeld(new IntakeCommand(1));
+        new JoystickButton(operator, PS4ControllerMappings.RIGHT_BUMPER.getID()).whileHeld(new ShootCommand(), true);
+
+        new JoystickButton(operator, PS4ControllerMappings.SQUARE.getID()).whenPressed(new IntakeExtensionCommand());
+        new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whenPressed(new ToggleHoodExtensionCommand());
     }
 
     public static double getRawAxis(ControllerAssignment controller, int axisID)
@@ -67,15 +53,11 @@ public class ControllerRegistry
 
     public enum ControllerAssignment
     {
-        DRIVER,
-        OPERATOR
+        DRIVER, OPERATOR
     }
 
-    static class PortAlreadyAllocatedException extends Exception
+    public static boolean isShooterButtonHeld()
     {
-        public PortAlreadyAllocatedException(int port, String details)
-        {
-            super("The provided port is already in use. Please check your ControllerRegistry class. Tried to assign port " + port + " with details: " + details);
-        }
+        return operator.getRawButton(PS4ControllerMappings.RIGHT_BUMPER.getID());
     }
 }

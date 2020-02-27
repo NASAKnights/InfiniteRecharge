@@ -1,14 +1,12 @@
 package xyz.nasaknights.infiniterecharge;
 
 import com.team2363.logger.HelixEvents;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.PathFollowCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.paths.ThreeByThree;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.paths.ThreeFeetForward;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 public class Robot extends TimedRobot
@@ -24,6 +22,7 @@ public class Robot extends TimedRobot
     {
         robotContainer = new RobotContainer();
         RobotContainer.setProfile(driverProfile);
+        RobotContainer.getDrivetrain().setMaxSpeeds(driverProfile.getMaxThrottle(), driverProfile.getMaxTurn());
         driveCommand.schedule(); // schedules a Drive Command which cannot be interruptible
     }
 
@@ -33,7 +32,6 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().run();
 
         SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
-        shooterCheck(); // displays and sets the speed of the motor controllers in the shooter subsystem
 //        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
 //        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());
 //        SmartDashboard.putNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD());
@@ -41,6 +39,7 @@ public class Robot extends TimedRobot
 //        RobotContainer.getDrivetrain().setTurnI(SmartDashboard.getNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI()));
 //        RobotContainer.getDrivetrain().setTurnD(SmartDashboard.getNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD()));
     }
+
     @Override
     public void disabledInit()
     {
@@ -68,7 +67,13 @@ public class Robot extends TimedRobot
     @Override
     public void teleopInit()
     {
+        RobotContainer.getIntake().setIntakeExtended(false);
         RobotContainer.getDrivetrain().getDefaultCommand().schedule();
+        RobotContainer.getIntake().getDefaultCommand().schedule();
+
+        RobotContainer.getQueuerSubsystem().setBeltPower(.5);
+
+        RobotContainer.getShooterSubsystem().setHoodExtended(false);
     }
 
     @Override
@@ -87,16 +92,5 @@ public class Robot extends TimedRobot
     public void testPeriodic()
     {
         RobotContainer.getDrivetrain().setDrivetrainNeutral(false);
-    }
-
-    private void shooterCheck()
-    {
-        SmartDashboard.putNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get());
-        RobotContainer.getShooterSubsystem().set(SmartDashboard.getNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get()));
-    }
-
-    public static DriveCommand getDriveCommand()
-    {
-        return driveCommand;
     }
 }

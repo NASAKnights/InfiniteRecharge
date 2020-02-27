@@ -1,18 +1,17 @@
 package xyz.nasaknights.infiniterecharge.subsystems;
 
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.Constants;
-import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_SparkMax;
+import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_TalonFX;
+import xyz.nasaknights.infiniterecharge.util.control.pneumatics.Lazy_DoubleSolenoid;
 
 public class ShooterSubsystem extends SubsystemBase
 {
-    // TODO Add PID for faster spin up?
+    Lazy_TalonFX left, right;
 
-    Lazy_SparkMax left, right;
-
-    SpeedControllerGroup shooterMotors;
+    private Lazy_DoubleSolenoid hoodShifter;
 
     public ShooterSubsystem()
     {
@@ -22,20 +21,34 @@ public class ShooterSubsystem extends SubsystemBase
     private void initMotors()
     {
         // TODO Re-enable once these are on the robot and this mechanism is installed
-//        left = new Lazy_SparkMax(Constants.LEFT_SPARK_MAX, MotorType.kBrushless); // instantiate the left NEO
-//        right = new Lazy_SparkMax(Constants.RIGHT_SPARK_MAX, MotorType.kBrushless); // instantiate the right NEO
-//        right.setInverted(true); // set the right NEO inverted
-//        shooterMotors = new SpeedControllerGroup(left, right); // instantiates a new SpeedControllerGroup with the NEOs
+        left = new Lazy_TalonFX(Constants.LEFT_SHOOTER_TALON_FX); // instantiate the left
+        right = new Lazy_TalonFX(Constants.RIGHT_SHOOTER_TALON_FX); // instantiate the right
+        hoodShifter = new Lazy_DoubleSolenoid(Constants.PCM_ID, Constants.HOOD_FORWARD_CHANNEL, Constants.HOOD_REVERSE_CHANNEL);
     }
 
     public void set(double power)
     {
-//        shooterMotors.set(power); // sets the power of the shooter
+        left.set(ControlMode.PercentOutput, -power);
+        right.set(ControlMode.PercentOutput, power);
     }
 
-    public double get()
+    public void setHoodExtended(boolean extended)
     {
-        return 0; // return shooterMotors.get();
+        hoodShifter.set(extended ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
 
+    public boolean getHoodExtended()
+    {
+        return hoodShifter.get() == DoubleSolenoid.Value.kForward;
+    }
+
+    public void toggleHoodExtended()
+    {
+        hoodShifter.set((hoodShifter.get() == DoubleSolenoid.Value.kForward) ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+    }
+
+//    public boolean isShooterUpToSpeed()
+//    {
+//        return left.getActiveTrajectoryVelocity()
+//    }
 }

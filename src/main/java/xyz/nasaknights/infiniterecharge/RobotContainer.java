@@ -3,32 +3,31 @@ package xyz.nasaknights.infiniterecharge;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
-import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
+import xyz.nasaknights.infiniterecharge.subsystems.IntakeSubsystem;
+import xyz.nasaknights.infiniterecharge.subsystems.QueuerSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.ShooterSubsystem;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
-import xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings;
 
 public class RobotContainer
 {
     private static final Compressor compressor = new Compressor(Constants.PCM_ID);
+
+    private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+    private static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    private static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    private static final QueuerSubsystem queuerSubsystem = new QueuerSubsystem();
 
     private static DriverProfile profile;
     private static Joystick driver = new Joystick(Constants.DRIVER_ID);
     private static Joystick operator = new Joystick(Constants.OPERATOR_ID);
     private static AHRS navx = new AHRS(Constants.IMU_PORT);
 
-    private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
-    private static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-
     public RobotContainer()
     {
         ControllerRegistry.setupDriverJoystick(Constants.DRIVER_ID, Constants.CURRENT_DRIVER_PROFILE);
-
-        configureButtonBindings();
+        ControllerRegistry.setupOperatorJoystick(Constants.OPERATOR_ID, Constants.CURRENT_DRIVER_PROFILE);
 
         compressor.setClosedLoopControl(true);
         compressor.start();
@@ -74,6 +73,11 @@ public class RobotContainer
         return drivetrainSubsystem;
     }
 
+    public static IntakeSubsystem getIntake()
+    {
+        return intakeSubsystem;
+    }
+  
     public static void initIMU()
     {
         navx = new AHRS(Constants.IMU_PORT);
@@ -94,11 +98,9 @@ public class RobotContainer
         return shooterSubsystem;
     }
 
-    private void configureButtonBindings()
+    public static QueuerSubsystem getQueuerSubsystem()
     {
-        new JoystickButton(driver, PS4ControllerMappings.RIGHT_JOYSTICK.getID()).whenPressed(new DriveToAngleCommand(0.0));
-
-        new JoystickButton(operator, PS4ControllerMappings.X.getID()).whileHeld(new ShootCommand());
+        return queuerSubsystem;
     }
 
     //    public Command getAutonomousCommand()
