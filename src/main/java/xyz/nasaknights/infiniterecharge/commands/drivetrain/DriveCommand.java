@@ -7,6 +7,11 @@ import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 import static xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings.*;
 
+/**
+ * The main command for the drivetrain subsystem.
+ *
+ * @see xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem
+ */
 public class DriveCommand extends CommandBase
 {
 
@@ -17,16 +22,14 @@ public class DriveCommand extends CommandBase
     }
 
     @Override
-    public void initialize()
-    {
-
-    }
-
-    @Override
     public void execute()
     {
         double throttle;
         double turn;
+
+        double leftTrigger = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, LEFT_TRIGGER.getID());
+        double rightTrigger = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, RIGHT_TRIGGER.getID());
+        double leftXAxis = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, LEFT_X_AXIS.getID());
 
         double leftYAxis = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, LEFT_Y_AXIS.getID());
         double rightXAxis = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, RIGHT_X_AXIS.getID());
@@ -35,8 +38,13 @@ public class DriveCommand extends CommandBase
         switch (RobotContainer.getProfile().getControlType())
         {
             case GTA:
-                throttle = RobotContainer.getDriverRawAxis(LEFT_TRIGGER.getID()) - RobotContainer.getDriverRawAxis(RIGHT_TRIGGER.getID());
-                turn = RobotContainer.getDriverRawAxis(RIGHT_X_AXIS.getID() * (RobotContainer.getProfile().doesWantSquaredInputs() ? 2 : 1));
+                throttle = rightTrigger - leftTrigger;
+                turn = leftXAxis * -1;
+                break;
+            case GTA_REVERSED:
+                throttle = leftTrigger - rightTrigger;
+                turn = rightXAxis * -1;
+                break;
             case STICKS:
                 throttle = leftYAxis;
                 turn = rightXAxis * -1;
@@ -44,6 +52,7 @@ public class DriveCommand extends CommandBase
             default:
                 throttle = 0;
                 turn = 0;
+                break;
         }
 
         if (RobotContainer.getProfile().getDriveType() == DriverProfile.DriveType.ARCADE_DRIVE)
@@ -56,8 +65,8 @@ public class DriveCommand extends CommandBase
     }
 
     @Override
-    public void end(boolean interrupted)
+    public boolean isFinished()
     {
-        RobotContainer.getDrivetrain().stop();
+        return false;
     }
 }

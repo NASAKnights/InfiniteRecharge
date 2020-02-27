@@ -11,3 +11,4 @@ bin/
 .gradle/
 
 *.prefs
+._.DS_Store
