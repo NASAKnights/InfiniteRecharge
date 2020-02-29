@@ -15,14 +15,12 @@ public class Robot extends TimedRobot
 
     private RobotContainer robotContainer;
 
-    private DriverProfile driverProfile = DriverProfile.BH;
-
     @Override
     public void robotInit()
     {
         robotContainer = new RobotContainer();
-        RobotContainer.setProfile(driverProfile);
-        RobotContainer.getDrivetrain().setMaxSpeeds(driverProfile.getMaxThrottle(), driverProfile.getMaxTurn());
+        RobotContainer.setProfile(Constants.CURRENT_DRIVER_PROFILE);
+        RobotContainer.getDrivetrain().setMaxSpeeds(Constants.CURRENT_DRIVER_PROFILE.getMaxThrottle(), Constants.CURRENT_DRIVER_PROFILE.getMaxTurn());
         driveCommand.schedule(); // schedules a Drive Command which cannot be interruptible
     }
 
@@ -71,7 +69,7 @@ public class Robot extends TimedRobot
         RobotContainer.getDrivetrain().getDefaultCommand().schedule();
         RobotContainer.getIntake().getDefaultCommand().schedule();
 
-        RobotContainer.getQueuerSubsystem().setBeltPower(.5);
+        RobotContainer.getQueuerSubsystem().setBeltPower(0);
 
         RobotContainer.getShooterSubsystem().setHoodExtended(false);
     }

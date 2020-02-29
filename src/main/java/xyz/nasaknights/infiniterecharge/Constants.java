@@ -65,7 +65,7 @@ public final class Constants
     public static final short OPERATOR_ID = 1;
 
     // Driver Profile
-    public static final DriverProfile CURRENT_DRIVER_PROFILE = DriverProfile.BH;
+    public static final DriverProfile CURRENT_DRIVER_PROFILE = DriverProfile.MK;
 
     // CAN ID for Power Distribution Panel
     public static final int PDP_ID = 0;

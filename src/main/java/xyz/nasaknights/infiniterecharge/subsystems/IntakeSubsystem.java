@@ -3,9 +3,9 @@ package xyz.nasaknights.infiniterecharge.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.Constants;
+import xyz.nasaknights.infiniterecharge.commands.intake.VariableSpeedIntakeCommand;
 import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_VictorSPX;
 import xyz.nasaknights.infiniterecharge.util.control.pneumatics.Lazy_DoubleSolenoid;
 
@@ -41,13 +41,11 @@ public class IntakeSubsystem extends SubsystemBase
     @Override
     public Command getDefaultCommand()
     {
-        return new CommandBase()
-        {
-        };
+        return new VariableSpeedIntakeCommand();
     }
 
     public void toggleIntakeExtended()
     {
-        doubleSolenoid.set((doubleSolenoid.get() == DoubleSolenoid.Value.kForward) ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+        doubleSolenoid.set((doubleSolenoid.get() == DEPLOYED_INTAKE) ? RETRACTED_INTAKE : DEPLOYED_INTAKE);
     }
 }
