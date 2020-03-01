@@ -2,31 +2,45 @@ package xyz.nasaknights.infiniterecharge.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
-import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 
 public class ShootCommand extends CommandBase
 {
-    public ShootCommand()
+    private boolean far;
+    private long totalTime;
+    private boolean hasReachedTarget = false;
+
+    public ShootCommand(boolean far)
     {
+        this.far = far;
         addRequirements(RobotContainer.getShooterSubsystem());
     }
 
     @Override
     public void initialize()
     {
-        RobotContainer.getShooterSubsystem().setHoodExtended(true);
+//        RobotContainer.getShooterSubsystem().setHoodExtended(false);
+        totalTime = System.currentTimeMillis();
+
+        if (far)
+        {
+            RobotContainer.getShooterSubsystem().setHoodExtended(true);
+        }
     }
 
     @Override
     public void execute()
     {
-        RobotContainer.getQueuerSubsystem().setQueuerIntakePower(1);
-        RobotContainer.getShooterSubsystem().set(1);
+        RobotContainer.getShooterSubsystem().setTargetShooterRPM(16000);
 
-//        if(RobotContainer.getShooterSubsystem())
-//        {
-//            RobotContainer.getQueuerSubsystem().setQueuerIntakePower(1);
-//        }
+        if (RobotContainer.getShooterSubsystem().isShooterUpToSpeed() && !hasReachedTarget)
+        {
+            totalTime = System.currentTimeMillis() - totalTime;
+            hasReachedTarget = true;
+            System.out.println("Reached target in " + totalTime + " ms");
+        }
+
+        RobotContainer.getQueuerSubsystem().setQueuerIntakePower(RobotContainer.getShooterSubsystem().isShooterUpToSpeed() ? 1 : 0);
+        RobotContainer.getQueuerSubsystem().setBeltPower(RobotContainer.getShooterSubsystem().isShooterUpToSpeed() ? 1 : 0);
     }
 
     @Override
@@ -38,14 +52,8 @@ public class ShootCommand extends CommandBase
     }
 
     @Override
-    public void cancel()
-    {
-        RobotContainer.getShooterSubsystem().set(0);
-    }
-
-    @Override
     public boolean isFinished()
     {
-        return !ControllerRegistry.isShooterButtonHeld();
+        return false; //return !ControllerRegistry.isShooterButtonHeld();
     }
 }

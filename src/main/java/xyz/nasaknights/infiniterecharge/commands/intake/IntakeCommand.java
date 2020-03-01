@@ -21,6 +21,7 @@ public class IntakeCommand extends CommandBase
     @Override
     public void execute()
     {
+        RobotContainer.getQueuerSubsystem().setBeltPower(.7);
         RobotContainer.getIntake().setIntakePower(speed);
     }
 
@@ -29,5 +30,6 @@ public class IntakeCommand extends CommandBase
     {
         RobotContainer.getIntake().setIntakeExtended(false);
         RobotContainer.getIntake().setIntakePower(0);
+        RobotContainer.getQueuerSubsystem().setBeltPower(0);
     }
 }

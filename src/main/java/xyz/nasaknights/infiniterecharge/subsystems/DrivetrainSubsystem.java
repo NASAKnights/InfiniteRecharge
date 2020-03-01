@@ -1,13 +1,19 @@
 package xyz.nasaknights.infiniterecharge.subsystems;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import edu.wpi.first.wpilibj.*;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.Constants;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.*;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.VisionDriveAssistCommand;
 import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
 
 /**
@@ -29,29 +35,29 @@ public class DrivetrainSubsystem extends SubsystemBase
 {
 
     //a configuration for the TalonFX motor controllers
-    private TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration()
-    {{
-        supplyCurrLimit = new SupplyCurrentLimitConfiguration()
-        {{
-            enable = true; // enables current limiting
-            currentLimit = 32; // limit to 32 amps
-            triggerThresholdCurrent = 32; // when 32 amps of power are hit limit to 32 amps
-            triggerThresholdTime = 0; // when 32 amps are hit limit to 32 amps after 0 seconds
-        }};
-        statorCurrLimit = new StatorCurrentLimitConfiguration()
-        {{
-            enable = true; // enables current limiting
-            currentLimit = 32; // limit to 32 amps
-            triggerThresholdCurrent = 32; // when 32 amps of power are hit limit to 32 amps
-            triggerThresholdTime = 0; // when 32 amps are hit limit to 32 amps after 0 seconds
-        }};
-        // default TalonFXConfiguration stuff
-        //        motorCommutation = MotorCommutation.Trapezoidal;
-        //        absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-        //        integratedSensorOffsetDegrees = 0;
-        //        initializationStrategy = SensorInitializationStrategy.BootToZero;
-
-    }};
+//    private TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration()
+//    {{
+//        supplyCurrLimit = new SupplyCurrentLimitConfiguration()
+//        {{
+//            enable = true; // enables current limiting
+//            currentLimit = 32; // limit to 32 amps
+//            triggerThresholdCurrent = 32; // when 32 amps of power are hit limit to 32 amps
+//            triggerThresholdTime = 0; // when 32 amps are hit limit to 32 amps after 0 seconds
+//        }};
+//        statorCurrLimit = new StatorCurrentLimitConfiguration()
+//        {{
+//            enable = true; // enables current limiting
+//            currentLimit = 32; // limit to 32 amps
+//            triggerThresholdCurrent = 32; // when 32 amps of power are hit limit to 32 amps
+//            triggerThresholdTime = 0; // when 32 amps are hit limit to 32 amps after 0 seconds
+//        }};
+//        // default TalonFXConfiguration stuff
+//        //        motorCommutation = MotorCommutation.Trapezoidal;
+//        //        absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+//        //        integratedSensorOffsetDegrees = 0;
+//        //        initializationStrategy = SensorInitializationStrategy.BootToZero;
+//
+//    }};
 
     private SpeedControllerGroup left, right; // Speed Controller groups that include all motors on left and right sides (init. in constructor)
 
@@ -183,6 +189,27 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightFront.setNeutralMode(NeutralMode.Coast);
         rightRear.setNeutralMode(NeutralMode.Coast);
 
+//        leftMaster.configOpenloopRamp(.25);
+//        leftFront.configOpenloopRamp(.25);
+//        leftRear.configOpenloopRamp(.25);
+//        rightMaster.configOpenloopRamp(.25);
+//        rightFront.configOpenloopRamp(.25);
+//        rightRear.configOpenloopRamp(.25);
+//
+//        leftMaster.configPeakOutputForward(.75);
+//        leftFront.configPeakOutputForward(.75);
+//        leftRear.configPeakOutputForward(.75);
+//        rightMaster.configPeakOutputForward(.75);
+//        rightFront.configPeakOutputForward(.75);
+//        rightRear.configPeakOutputForward(.75);
+//
+//        leftMaster.configPeakOutputReverse(.75);
+//        leftFront.configPeakOutputReverse(.75);
+//        leftRear.configPeakOutputReverse(.75);
+//        rightMaster.configPeakOutputReverse(.75);
+//        rightFront.configPeakOutputReverse(.75);
+//        rightRear.configPeakOutputReverse(.75);
+
         leftMaster.setInverted(false);
         leftFront.setInverted(true);
         leftRear.setInverted(true);
@@ -223,7 +250,7 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     public void setHighGear(boolean highGear)
     {
-        driveGearShifter.set(highGear);
+        driveGearShifter.set(!highGear);
     }
 
     public void setClimbExtended(boolean extended)
