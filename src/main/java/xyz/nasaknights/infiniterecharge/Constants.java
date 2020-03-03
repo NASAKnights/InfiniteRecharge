@@ -54,6 +54,10 @@ public final class Constants
 
     // Drivetrain Subsystem PCM IDs
     public static final short DRIVETRAIN_GEAR_SHIFTER_CHANNEL = 0;
+    public static final short DRIVETRAIN_POWER_TAKEOFF_CHANNEL = 1;
+
+    // Climb Subsystem PCM IDs
+    public static final short CLIMB_WINCH_CHANNEL = 7;
 
     ///////////////////////////////////////////////////////////////////////////////
     //                       Miscellaneous Constants                             //

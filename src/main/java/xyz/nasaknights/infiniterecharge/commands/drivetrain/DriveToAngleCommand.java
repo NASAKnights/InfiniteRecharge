@@ -28,11 +28,6 @@ public class DriveToAngleCommand extends PIDCommand
     private static double I;
     private static double D;
 
-    /**
-     * @deprecated This constructor has been deprecated due to the VisionClient being not implemented at the time.
-     * It will be un-deprecated when the Vision Client is added.
-     */
-    @Deprecated
     public DriveToAngleCommand(double angle)
     {
         super(new PIDController(P, I, D), () -> RobotContainer.getIMU().getAngle(), 0, value ->

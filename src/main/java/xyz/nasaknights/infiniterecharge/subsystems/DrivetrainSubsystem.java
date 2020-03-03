@@ -10,6 +10,8 @@ import xyz.nasaknights.infiniterecharge.Constants;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.*;
 import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
 
+import java.util.function.DoubleSupplier;
+
 /**
  * <p>The programmatic representation of the drivetrain, which consists of six Falcon 500 motors as the drive motors,
  * a single solenoid used switching between low and high gear for the motors, and a double solenoid for engaging
@@ -59,20 +61,20 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     // declarations of the motor controllers
     private Lazy_WPI_TalonFX leftMaster,
-            leftFront,
-            leftRear,
-            rightMaster,
-            rightFront,
-            rightRear;
+            leftFront, leftRear, rightMaster, rightFront, rightRear;
 
     // servo declarations
     private Servo leftNeutralServo;
     private Servo rightNeutralServo;
     private Servo testServo;
 
+    // TODO Verify these angle values, min is 0, max is 180
+    private static final double DRIVE_ANGLE = 0;
+    private static final double NEUTRAL_ANGLE = 180;
+
     // solenoid delcarations
     private Solenoid driveGearShifter;
-    private DoubleSolenoid powerTakeoffShifter;
+    private Solenoid powerTakeoffShifter;
 
     // TODO Verify these values
     private DoubleSolenoid.Value climbGear = DoubleSolenoid.Value.kForward;
@@ -218,7 +220,7 @@ public class DrivetrainSubsystem extends SubsystemBase
     private void initPneumatics()
     {
         driveGearShifter = new Solenoid(Constants.PCM_ID, Constants.DRIVETRAIN_GEAR_SHIFTER_CHANNEL);
-        //powerTakeoffShifter = new DoubleSolenoid(Constants.PCM_ID, Constants.FORWARD_POWER_TAKEOFF_CHANNEL, Constants.REVERSE_POWER_TAKEOFF_CHANNEL); // TODO Enable once added
+        powerTakeoffShifter = new Solenoid(Constants.PCM_ID, Constants.DRIVETRAIN_POWER_TAKEOFF_CHANNEL); // TODO Enable once added
     }
 
     public void setHighGear(boolean highGear)
@@ -226,9 +228,9 @@ public class DrivetrainSubsystem extends SubsystemBase
         driveGearShifter.set(highGear);
     }
 
-    public void setClimbExtended(boolean extended)
+    public void setPowerTakeoffExtended(boolean extended)
     {
-        powerTakeoffShifter.set(extended ? climbGear : driveGear);
+        powerTakeoffShifter.set(extended);
     }
 
     public boolean isDriveInHighGear()
@@ -236,9 +238,9 @@ public class DrivetrainSubsystem extends SubsystemBase
         return driveGearShifter.get();
     }
 
-    public boolean isAtClimbGear()
+    public boolean isInClimbGear()
     {
-        return powerTakeoffShifter.get() == climbGear;
+        return powerTakeoffShifter.get();
     }
 
     @Override
@@ -343,12 +345,37 @@ public class DrivetrainSubsystem extends SubsystemBase
      * This method toggles the neutrality of the drivetrain. This should be used to shift control to the climber for
      * the endgame period.
      *
-     * @author Bradley Hooten (hello@bradleyh.me)
      * @param isNeutral Boolean specifying whether the drivetrain should be set to neutral or not
+     * @author Bradley Hooten (hello@bradleyh.me)
      */
     public void setDrivetrainNeutral(boolean isNeutral)
     {
-        //        System.out.println("Test Raw: " + testServo.getRaw() + "; Test Angle: " + testServo.getAngle());
+        // System.out.println("Test Raw: " + testServo.getRaw() + "; Test Angle: " + testServo.getAngle());
+/*
+        // TODO please tune these angle values
+        leftNeutralServo.setAngle((isNeutral) ? NEUTRAL_ANGLE : DRIVE_ANGLE);
+        rightNeutralServo.setAngle((isNeutral) ? NEUTRAL_ANGLE : DRIVE_ANGLE);
+*/
+    }
+
+    public boolean isDriveNeutral()
+    {
+        return leftNeutralServo.getAngle() >= NEUTRAL_ANGLE && rightNeutralServo.getAngle() >= NEUTRAL_ANGLE;
+    }
+
+    public void unlockPowerTakeoff()
+    {
+        // TODO Implement
+    }
+
+    public void disableMotors()
+    {
+        leftMaster = null;
+        leftFront = null;
+        leftRear = null;
+        rightMaster = null;
+        rightFront = null;
+        rightRear = null;
     }
 
     public enum DrivetrainSpeedState
