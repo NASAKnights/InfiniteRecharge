@@ -77,7 +77,7 @@ public class RobotContainer
         {
             try
             {
-                visionClient = new VisionClient();
+                visionClient = new VisionClient(Constants.VISION_CLIENT_IP_ADDRESS, Constants.VISION_CLIENT_PORT);
             } catch (VisionClientInitializationException e)
             {
                 e.printStackTrace();

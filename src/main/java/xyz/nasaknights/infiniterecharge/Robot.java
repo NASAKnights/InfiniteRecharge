@@ -23,7 +23,7 @@ public class Robot extends TimedRobot
         robotContainer = new RobotContainer();
         RobotContainer.setProfile(driverProfile);
         RobotContainer.getDrivetrain().setMaxSpeeds(driverProfile.getMaxThrottle(), driverProfile.getMaxTurn());
-        driveCommand.schedule(); // schedules a Drive Command which cannot be interruptible
+        RobotContainer.getVisionClient().setLightOn(true);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class Robot extends TimedRobot
     {
         CommandScheduler.getInstance().run();
 
-        SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
+        SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getVisionClient().getButtonPressed());
         shooterCheck(); // displays and sets the speed of the motor controllers in the shooter subsystem
         //        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
         //        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());

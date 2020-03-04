@@ -1,5 +1,6 @@
 package xyz.nasaknights.infiniterecharge.util.vision;
 
+import edu.wpi.first.wpilibj.Spark;
 import xyz.nasaknights.infiniterecharge.Constants;
 
 import java.io.*;
@@ -13,14 +14,18 @@ public class VisionClient extends Thread
     private byte NUMBER_OF_VALUES = 3;
     private double[] dataArray;
 
+    private boolean buttonPressed = false;
+
     // update as these are subject to change, TODO Get finalized data format before final commit
     private double angle, throttle, turn;
 
-    public VisionClient() throws VisionClientInitializationException
+    private Spark light;
+
+    public VisionClient(String ipAddr, int port) throws VisionClientInitializationException
     {
         try
         {
-            visionSocket = new Socket(Constants.VISION_CLIENT_IP_ADDRESS, Constants.VISION_CLIENT_PORT);
+            visionSocket = new Socket(ipAddr, port);
         } catch (Exception e)
         {
             throw new VisionClientInitializationException("Location: Socket");
@@ -41,6 +46,8 @@ public class VisionClient extends Thread
         {
             throw new VisionClientInitializationException("Location: Output stream.");
         }
+
+        light = new Spark(Constants.VISION_CLIENT_LIGHT_SOURCE);
     }
 
     public void run()
@@ -48,7 +55,7 @@ public class VisionClient extends Thread
         try
         {
             // verify what needs to be written to the vision server
-            serverWriter.writeBytes("Can I have some data please?");
+            serverWriter.writeByte((buttonPressed) ? 1 : 0);
             String data = serverReader.readLine();
             parseData(data);
         } catch (Exception e)
@@ -79,6 +86,21 @@ public class VisionClient extends Thread
         angle = values[0];
         throttle = values[1];
         turn = values[2];
+    }
+
+    public void setButtonPressed(boolean pressed)
+    {
+        buttonPressed = pressed;
+    }
+
+    public boolean getButtonPressed()
+    {
+        return buttonPressed;
+    }
+
+    public void setLightOn(boolean on)
+    {
+        light.set(on ? 1 : 0);
     }
 
     public double getAngle()
