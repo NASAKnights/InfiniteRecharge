@@ -11,8 +11,8 @@ public final class Constants
     ///////////////////////////////////////////////////////////////////////////////
 
     // Shooter Subsystem
-    public static final short LEFT_SHOOTER_SPARK_MAX = 7;
-    public static final short RIGHT_SHOOTER_SPARK_MAX = 8;
+    public static final short LEFT_SHOOTER_TALON_FX = 7;
+    public static final short RIGHT_SHOOTER_TALON_FX = 8;
 
     // Queuer Subsystem
     public static final short RIGHT_BELT_VICTOR_ID = 11;
@@ -69,7 +69,7 @@ public final class Constants
     public static final short OPERATOR_ID = 1;
 
     // Driver Profile
-    public static final DriverProfile CURRENT_DRIVER_PROFILE = DriverProfile.BH;
+    public static final DriverProfile CURRENT_DRIVER_PROFILE = DriverProfile.MK;
 
     // CAN ID for Power Distribution Panel
     public static final int PDP_ID = 0;

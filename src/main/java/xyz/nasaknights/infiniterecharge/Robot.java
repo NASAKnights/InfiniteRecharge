@@ -15,14 +15,12 @@ public class Robot extends TimedRobot
 
     private RobotContainer robotContainer;
 
-    private DriverProfile driverProfile = DriverProfile.BH;
-
     @Override
     public void robotInit()
     {
         robotContainer = new RobotContainer();
-        RobotContainer.setProfile(driverProfile);
-        RobotContainer.getDrivetrain().setMaxSpeeds(driverProfile.getMaxThrottle(), driverProfile.getMaxTurn());
+        RobotContainer.setProfile(Constants.CURRENT_DRIVER_PROFILE);
+        RobotContainer.getDrivetrain().setMaxSpeeds(Constants.CURRENT_DRIVER_PROFILE.getMaxThrottle(), Constants.CURRENT_DRIVER_PROFILE.getMaxTurn());
         driveCommand.schedule(); // schedules a Drive Command which cannot be interruptible
     }
 
@@ -32,16 +30,14 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().run();
 
         SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
-        shooterCheck(); // displays and sets the speed of the motor controllers in the shooter subsystem
 //        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
 //        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());
 //        SmartDashboard.putNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD());
 //        RobotContainer.getDrivetrain().setTurnP(SmartDashboard.getNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP()));
 //        RobotContainer.getDrivetrain().setTurnI(SmartDashboard.getNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI()));
 //        RobotContainer.getDrivetrain().setTurnD(SmartDashboard.getNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD()));
-
-        RobotContainer.getIntake().setIntakeExtended(false);
     }
+
     @Override
     public void disabledInit()
     {
@@ -73,9 +69,9 @@ public class Robot extends TimedRobot
         RobotContainer.getDrivetrain().getDefaultCommand().schedule();
         RobotContainer.getIntake().getDefaultCommand().schedule();
 
-        RobotContainer.getQueuerSubsystem().setBeltPower(.5);
+        RobotContainer.getQueuerSubsystem().setBeltPower(0);
 
-        RobotContainer.getShooterSubsystem().setHoodExtended(true);
+        RobotContainer.getShooterSubsystem().setHoodExtended(false);
     }
 
     @Override
@@ -94,11 +90,5 @@ public class Robot extends TimedRobot
     public void testPeriodic()
     {
         RobotContainer.getDrivetrain().setDrivetrainNeutral(false);
-    }
-
-    private void shooterCheck()
-    {
-        SmartDashboard.putNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get());
-        RobotContainer.getShooterSubsystem().set(SmartDashboard.getNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get()));
     }
 }

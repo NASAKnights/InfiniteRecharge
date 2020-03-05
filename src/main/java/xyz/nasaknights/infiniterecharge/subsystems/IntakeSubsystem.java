@@ -11,8 +11,8 @@ import xyz.nasaknights.infiniterecharge.util.control.pneumatics.Lazy_DoubleSolen
 
 public class IntakeSubsystem extends SubsystemBase
 {
-    private static final DoubleSolenoid.Value DEPLOYED_INTAKE = DoubleSolenoid.Value.kForward;
-    private static final DoubleSolenoid.Value RETRACTED_INTAKE = DoubleSolenoid.Value.kReverse;
+    private static final DoubleSolenoid.Value DEPLOYED_INTAKE = DoubleSolenoid.Value.kReverse;
+    private static final DoubleSolenoid.Value RETRACTED_INTAKE = DoubleSolenoid.Value.kForward;
     Lazy_VictorSPX intake;
     Lazy_DoubleSolenoid doubleSolenoid;
 
@@ -35,7 +35,7 @@ public class IntakeSubsystem extends SubsystemBase
 
     public void setIntakeExtended(boolean extended)
     {
-        doubleSolenoid.set((extended) ? DEPLOYED_INTAKE : RETRACTED_INTAKE);
+        doubleSolenoid.set(extended ? DEPLOYED_INTAKE : RETRACTED_INTAKE);
     }
 
     @Override
@@ -46,6 +46,6 @@ public class IntakeSubsystem extends SubsystemBase
 
     public void toggleIntakeExtended()
     {
-        doubleSolenoid.set((doubleSolenoid.get() == DoubleSolenoid.Value.kForward) ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward);
+        doubleSolenoid.set((doubleSolenoid.get() == DEPLOYED_INTAKE) ? RETRACTED_INTAKE : DEPLOYED_INTAKE);
     }
 }
