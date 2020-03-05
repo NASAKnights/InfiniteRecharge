@@ -1,7 +1,6 @@
 package xyz.nasaknights.infiniterecharge;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import xyz.nasaknights.infiniterecharge.subsystems.DrivetrainSubsystem;
 import xyz.nasaknights.infiniterecharge.subsystems.IntakeSubsystem;
@@ -12,7 +11,7 @@ import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 
 public class RobotContainer
 {
-    private static final Compressor compressor = new Compressor(Constants.PCM_ID);
+//    private static final Compressor compressor = new Compressor(Constants.PCM_ID);
 
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
     private static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
@@ -29,8 +28,8 @@ public class RobotContainer
         ControllerRegistry.setupDriverJoystick(Constants.DRIVER_ID, Constants.CURRENT_DRIVER_PROFILE);
         ControllerRegistry.setupOperatorJoystick(Constants.OPERATOR_ID, Constants.CURRENT_DRIVER_PROFILE);
 
-        compressor.setClosedLoopControl(true);
-        compressor.start();
+//        compressor.setClosedLoopControl(true); TODO Reenable this
+//        compressor.start();
     }
 
     public static Joystick getDriver()

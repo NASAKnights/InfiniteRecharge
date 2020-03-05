@@ -29,6 +29,8 @@ public class Robot extends TimedRobot
     {
         CommandScheduler.getInstance().run();
 
+        RobotContainer.getDrivetrain().runPeriodicServoTask();
+
         SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
 //        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
 //        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());

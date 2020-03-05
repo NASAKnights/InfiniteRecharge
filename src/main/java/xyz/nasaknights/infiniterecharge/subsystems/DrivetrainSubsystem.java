@@ -59,6 +59,8 @@ public class DrivetrainSubsystem extends SubsystemBase
 //
 //    }};
 
+    private boolean isNeutral = false;
+
     private SpeedControllerGroup left, right; // Speed Controller groups that include all motors on left and right sides (init. in constructor)
 
     private DifferentialDrive drive; // standard library drive for West Coast drivetrains
@@ -74,7 +76,6 @@ public class DrivetrainSubsystem extends SubsystemBase
     // servo declarations
     private Servo leftNeutralServo;
     private Servo rightNeutralServo;
-    private Servo testServo;
 
     // solenoid delcarations
     private Solenoid driveGearShifter;
@@ -219,6 +220,9 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightRear.setInverted(true);
 
         drive = new DifferentialDrive(left, right);
+
+        rightNeutralServo = new Servo(Constants.RIGHT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
+        leftNeutralServo = new Servo(Constants.LEFT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
     }
 
     public void prepareClimbMotors()
@@ -375,11 +379,17 @@ public class DrivetrainSubsystem extends SubsystemBase
      */
     public void setDrivetrainNeutral(boolean isNeutral)
     {
-        //        System.out.println("Test Raw: " + testServo.getRaw() + "; Test Angle: " + testServo.getAngle());
+        this.isNeutral = isNeutral;
     }
 
     public enum DrivetrainSpeedState
     {
         FULL_SPEED, HALF_SPEED
+    }
+
+    public void runPeriodicServoTask()
+    {
+        leftNeutralServo.setAngle(isNeutral ? 180 : 160);
+        rightNeutralServo.setAngle(isNeutral ? 0 : 20);
     }
 }
