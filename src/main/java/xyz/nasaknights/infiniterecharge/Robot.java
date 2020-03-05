@@ -91,4 +91,10 @@ public class Robot extends TimedRobot
     {
         RobotContainer.getDrivetrain().setDrivetrainNeutral(false);
     }
+
+    private void shooterCheck()
+    {
+        //        SmartDashboard.putNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get());
+        //        RobotContainer.getShooterSubsystem().set(SmartDashboard.getNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get()));
+    }
 }

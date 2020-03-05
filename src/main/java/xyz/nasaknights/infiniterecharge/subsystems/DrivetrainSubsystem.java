@@ -16,8 +16,6 @@ import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveToAngleCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.VisionDriveAssistCommand;
 import xyz.nasaknights.infiniterecharge.util.control.motors.wpi.Lazy_WPI_TalonFX;
 
-import java.util.function.DoubleSupplier;
-
 /**
  * <p>The programmatic representation of the drivetrain, which consists of six Falcon 500 motors as the drive motors,
  * a single solenoid used switching between low and high gear for the motors, and a double solenoid for engaging
@@ -36,47 +34,20 @@ import java.util.function.DoubleSupplier;
 public class DrivetrainSubsystem extends SubsystemBase
 {
 
-    //a configuration for the TalonFX motor controllers
-//    private TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration()
-//    {{
-//        supplyCurrLimit = new SupplyCurrentLimitConfiguration()
-//        {{
-//            enable = true; // enables current limiting
-//            currentLimit = 32; // limit to 32 amps
-//            triggerThresholdCurrent = 32; // when 32 amps of power are hit limit to 32 amps
-//            triggerThresholdTime = 0; // when 32 amps are hit limit to 32 amps after 0 seconds
-//        }};
-//        statorCurrLimit = new StatorCurrentLimitConfiguration()
-//        {{
-//            enable = true; // enables current limiting
-//            currentLimit = 32; // limit to 32 amps
-//            triggerThresholdCurrent = 32; // when 32 amps of power are hit limit to 32 amps
-//            triggerThresholdTime = 0; // when 32 amps are hit limit to 32 amps after 0 seconds
-//        }};
-//        // default TalonFXConfiguration stuff
-//        //        motorCommutation = MotorCommutation.Trapezoidal;
-//        //        absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-//        //        integratedSensorOffsetDegrees = 0;
-//        //        initializationStrategy = SensorInitializationStrategy.BootToZero;
-//
-//    }};
+    // TODO Verify these angle values, min is 0, max is 180
+    private static final double LEFT_DRIVE_ANGLE = 0;
+    private static final double LEFT_NEUTRAL_ANGLE = 20;
+    private static final double RIGHT_DRIVE_ANGLE = 180;
+    private static final double RIGHT_NEUTRAL_ANGLE = 160;
 
     private SpeedControllerGroup left, right; // Speed Controller groups that include all motors on left and right sides (init. in constructor)
-
     private DifferentialDrive drive; // standard library drive for West Coast drivetrains
-
     // declarations of the motor controllers
-    private Lazy_WPI_TalonFX leftMaster,
-            leftFront, leftRear, rightMaster, rightFront, rightRear;
+    private Lazy_WPI_TalonFX leftMaster, leftFront, leftRear, rightMaster, rightFront, rightRear;
 
     // servo declarations
     private Servo leftNeutralServo;
     private Servo rightNeutralServo;
-    private Servo testServo;
-
-    // TODO Verify these angle values, min is 0, max is 180
-    private static final double DRIVE_ANGLE = 0;
-    private static final double NEUTRAL_ANGLE = 180;
 
     // solenoid delcarations
     private Solenoid driveGearShifter;
@@ -91,6 +62,9 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     // enumerator for keeping track of the default max speeds, defaulted to FULL_SPEED
     private DrivetrainSpeedState speedState = DrivetrainSpeedState.FULL_SPEED;
+
+    // boolean for if the drivetrain is in neutral
+    private boolean neutral;
 
     /**
      * Constructor for the {@link DrivetrainSubsystem} class.
@@ -221,6 +195,9 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightRear.setInverted(true);
 
         drive = new DifferentialDrive(left, right);
+
+        leftNeutralServo = new Servo(Constants.LEFT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
+        rightNeutralServo = new Servo(Constants.RIGHT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
     }
 
     public void prepareClimbMotors()
@@ -273,6 +250,8 @@ public class DrivetrainSubsystem extends SubsystemBase
     @Override
     public void periodic()
     {
+        printServoAngles();
+        //        updateServoAngles();
     }
 
     /**
@@ -301,7 +280,7 @@ public class DrivetrainSubsystem extends SubsystemBase
     /**
      * Sets the drivetrain motor percentages by side.
      *
-     * @param left Target percentage output of the left side
+     * @param left  Target percentage output of the left side
      * @param right Target percentage output of the right side
      * @author Bradley Hooten (hello@bradleyh.me)
      */
@@ -309,23 +288,23 @@ public class DrivetrainSubsystem extends SubsystemBase
     {
         System.out.println("LEFT: " + left + "; RIGHT: " + right);
 
-//        if(left >= .4)
-//        {
-//            left = .4;
-//        }
-//        else if(left <= .4)
-//        {
-//            left = -.4;
-//        }
-//
-//        if(right >= .4)
-//        {
-//            right = .4;
-//        }
-//        else if(right <= -.4)
-//        {
-//            right = -.4;
-//        }
+        //        if(left >= .4)
+        //        {
+        //            left = .4;
+        //        }
+        //        else if(left <= .4)
+        //        {
+        //            left = -.4;
+        //        }
+        //
+        //        if(right >= .4)
+        //        {
+        //            right = .4;
+        //        }
+        //        else if(right <= -.4)
+        //        {
+        //            right = -.4;
+        //        }
 
         leftMaster.set(ControlMode.PercentOutput, left);
         leftFront.set(ControlMode.PercentOutput, left);
@@ -372,12 +351,12 @@ public class DrivetrainSubsystem extends SubsystemBase
      * This method toggles the neutrality of the drivetrain. This should be used to shift control to the climber for
      * the endgame period.
      *
-     * @param isNeutral Boolean specifying whether the drivetrain should be set to neutral or not
+     * @param neutral Boolean specifying whether the drivetrain should be set to neutral or not
      * @author Bradley Hooten (hello@bradleyh.me)
      */
-    public void setDrivetrainNeutral(boolean isNeutral)
+    public void setDrivetrainNeutral(boolean neutral)
     {
-        // System.out.println("Test Raw: " + testServo.getRaw() + "; Test Angle: " + testServo.getAngle());
+        this.neutral = neutral;
 /*
         // TODO please tune these angle values
         leftNeutralServo.setAngle((isNeutral) ? NEUTRAL_ANGLE : DRIVE_ANGLE);
@@ -385,14 +364,26 @@ public class DrivetrainSubsystem extends SubsystemBase
 */
     }
 
-    public boolean isDriveNeutral()
+    public void setServoSpeeds(double left, double right)
     {
-        return leftNeutralServo.getAngle() >= NEUTRAL_ANGLE && rightNeutralServo.getAngle() >= NEUTRAL_ANGLE;
+        leftNeutralServo.set(left);
+        rightNeutralServo.set(right);
     }
 
-    public void unlockPowerTakeoff()
+    private void updateServoAngles()
     {
-        // TODO Implement
+        leftNeutralServo.setAngle(neutral ? LEFT_NEUTRAL_ANGLE : LEFT_DRIVE_ANGLE);
+        rightNeutralServo.setAngle(neutral ? RIGHT_NEUTRAL_ANGLE : RIGHT_DRIVE_ANGLE);
+    }
+
+    public void printServoAngles()
+    {
+        System.out.println("Left Angle:  " + leftNeutralServo.getRaw() + "; Right Angle: " + rightNeutralServo.getAngle());
+    }
+
+    public boolean isDriveNeutral()
+    {
+        return neutral;
     }
 
     public void disableMotors()
