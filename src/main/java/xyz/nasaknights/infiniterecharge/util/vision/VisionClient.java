@@ -105,7 +105,7 @@ public class VisionClient extends Thread
 
     public void setLightOn(boolean on)
     {
-        light.set(on ? 1 : 0);
+        light.set(on ? -1 : 0);
     }
 
     public double getAngle()
