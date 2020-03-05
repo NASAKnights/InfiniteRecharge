@@ -3,6 +3,7 @@ package xyz.nasaknights.infiniterecharge.util.controllers;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import xyz.nasaknights.infiniterecharge.Constants;
+import xyz.nasaknights.infiniterecharge.Robot;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.commands.climb.ExtendWinchSequenceCommand;
 import xyz.nasaknights.infiniterecharge.commands.climb.LockClimbCommand;
@@ -34,7 +35,8 @@ public class ControllerRegistry
 
         // TODO Add button init here
 
-        new JoystickButton(driver, PS4ControllerMappings.SQUARE.getID()).whenPressed(new DrivetrainShiftCommand());
+        //        new JoystickButton(driver, PS4ControllerMappings.SQUARE.getID()).whenPressed(new DrivetrainShiftCommand());
+        new JoystickButton(driver, PS4ControllerMappings.SQUARE.getID()).whenPressed(new InstantCommand(() -> RobotContainer.getDrivetrain().setHighGear(true))).whenReleased(new InstantCommand(() -> RobotContainer.getDrivetrain().setHighGear(false)));
     }
 
     public static void setupOperatorJoystick(int port, DriverProfile profile)
@@ -44,7 +46,7 @@ public class ControllerRegistry
         // TODO Add button init here
 
         new JoystickButton(operator, PS4ControllerMappings.LEFT_BUMPER.getID()).whileHeld(new IntakeCommand(.75));
-        new JoystickButton(operator, PS4ControllerMappings.RIGHT_BUMPER.getID()).whileHeld(new ShootCommand());
+        new JoystickButton(operator, PS4ControllerMappings.RIGHT_BUMPER.getID()).whileHeld(new ShootCommand(false));
 
         new JoystickButton(operator, PS4ControllerMappings.SQUARE.getID()).whenPressed(new IntakeExtensionCommand());
         new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whenPressed(new ToggleHoodExtensionCommand());
@@ -86,6 +88,11 @@ public class ControllerRegistry
     public static boolean doesDriverWantSquaredInputs()
     {
         return doesDriverWantSquaredInputs;
+    }
+
+    public static boolean isShooterButtonHeld()
+    {
+        return operator.getRawButton(PS4ControllerMappings.RIGHT_BUMPER.getID());
     }
 
     public enum ControllerAssignment

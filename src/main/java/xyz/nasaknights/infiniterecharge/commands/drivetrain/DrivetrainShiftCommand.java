@@ -8,12 +8,14 @@ public class DrivetrainShiftCommand extends CommandBase
     @Override
     public void initialize()
     {
+        System.out.println("Attempting gear shift");
         RobotContainer.getDrivetrain().setHighGear(true);
     }
 
     @Override
     public void end(boolean interrupted)
     {
+        System.out.println("Ending high gear");
         RobotContainer.getDrivetrain().setHighGear(false);
     }
 }
