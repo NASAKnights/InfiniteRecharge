@@ -40,10 +40,19 @@ public class DrivetrainSubsystem extends SubsystemBase
     private static final double RIGHT_DRIVE_ANGLE = 180;
     private static final double RIGHT_NEUTRAL_ANGLE = 160;
 
+    private boolean isNeutral = false;
+
     private SpeedControllerGroup left, right; // Speed Controller groups that include all motors on left and right sides (init. in constructor)
+
     private DifferentialDrive drive; // standard library drive for West Coast drivetrains
+
     // declarations of the motor controllers
-    private Lazy_WPI_TalonFX leftMaster, leftFront, leftRear, rightMaster, rightFront, rightRear;
+    private Lazy_WPI_TalonFX leftMaster,
+            leftFront,
+            leftRear,
+            rightMaster,
+            rightFront,
+            rightRear;
 
     // servo declarations
     private Servo leftNeutralServo;
@@ -250,8 +259,6 @@ public class DrivetrainSubsystem extends SubsystemBase
     @Override
     public void periodic()
     {
-        printServoAngles();
-        //        updateServoAngles();
     }
 
     /**
@@ -351,53 +358,31 @@ public class DrivetrainSubsystem extends SubsystemBase
      * This method toggles the neutrality of the drivetrain. This should be used to shift control to the climber for
      * the endgame period.
      *
-     * @param neutral Boolean specifying whether the drivetrain should be set to neutral or not
      * @author Bradley Hooten (hello@bradleyh.me)
      */
-    public void setDrivetrainNeutral(boolean neutral)
+    public void setDrivetrainNeutral(boolean isNeutral)
     {
-        this.neutral = neutral;
-/*
-        // TODO please tune these angle values
-        leftNeutralServo.setAngle((isNeutral) ? NEUTRAL_ANGLE : DRIVE_ANGLE);
-        rightNeutralServo.setAngle((isNeutral) ? NEUTRAL_ANGLE : DRIVE_ANGLE);
-*/
-    }
-
-    public void setServoSpeeds(double left, double right)
-    {
-        leftNeutralServo.set(left);
-        rightNeutralServo.set(right);
-    }
-
-    private void updateServoAngles()
-    {
-        leftNeutralServo.setAngle(neutral ? LEFT_NEUTRAL_ANGLE : LEFT_DRIVE_ANGLE);
-        rightNeutralServo.setAngle(neutral ? RIGHT_NEUTRAL_ANGLE : RIGHT_DRIVE_ANGLE);
-    }
-
-    public void printServoAngles()
-    {
-        System.out.println("Left Angle:  " + leftNeutralServo.getRaw() + "; Right Angle: " + rightNeutralServo.getAngle());
-    }
-
-    public boolean isDriveNeutral()
-    {
-        return neutral;
-    }
-
-    public void disableMotors()
-    {
-        leftMaster = null;
-        leftFront = null;
-        leftRear = null;
-        rightMaster = null;
-        rightFront = null;
-        rightRear = null;
+        this.isNeutral = isNeutral;
     }
 
     public enum DrivetrainSpeedState
     {
         FULL_SPEED, HALF_SPEED
+    }
+
+    public void runPeriodicServoTask()
+    {
+        leftNeutralServo.setAngle(isNeutral ? 180 : 160);
+        rightNeutralServo.setAngle(isNeutral ? 0 : 20);
+    }
+
+    public void disableMotors()
+    {
+        leftMaster.disable();
+        leftFront.disable();
+        leftRear.disable();
+        rightMaster.disable();
+        rightFront.disable();
+        rightRear.disable();
     }
 }

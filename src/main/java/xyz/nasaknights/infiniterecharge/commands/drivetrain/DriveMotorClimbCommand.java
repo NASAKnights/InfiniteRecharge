@@ -1,7 +1,6 @@
 package xyz.nasaknights.infiniterecharge.commands.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 import static xyz.nasaknights.infiniterecharge.RobotContainer.getClimberSubsystem;
 import static xyz.nasaknights.infiniterecharge.RobotContainer.getDrivetrain;
@@ -31,14 +30,15 @@ public class DriveMotorClimbCommand extends CommandBase
     public void execute()
     {
         getDrivetrain().setMotorPercents(power, power);
-        new PrintCommand("Average Encoder Value: " + (getDrivetrain().getLeftEncoderPosition() + getDrivetrain().getRightEncoderPosition() / 2)).schedule();
+
+        System.out.println("Average Encoder Value: " + (getDrivetrain().getLeftEncoderPosition() + getDrivetrain().getRightEncoderPosition() / 2));
     }
 
     @Override
     public void end(boolean interrupted)
     {
         // TODO Make autonomous with encoder values later???
-        new PrintCommand("########## Ending Climb Controlled portion ##########\n " + "Average Encoder value: " + (getDrivetrain().getLeftEncoderPosition() + getDrivetrain().getRightEncoderPosition() / 2)).schedule();
+        System.out.println("########## Ending Climb Controlled portion ##########\n " + "Average Encoder value: " + (getDrivetrain().getLeftEncoderPosition() + getDrivetrain().getRightEncoderPosition() / 2));
     }
 
     @Override

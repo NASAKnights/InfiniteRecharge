@@ -26,7 +26,6 @@ public class RobotContainer
     {
         ControllerRegistry.setupDriverJoystick(Constants.DRIVER_ID, Constants.CURRENT_DRIVER_PROFILE);
         ControllerRegistry.setupOperatorJoystick(Constants.OPERATOR_ID, Constants.CURRENT_DRIVER_PROFILE);
-        ControllerRegistry.setupTestJoystick(2, null);
 
         compressor.setClosedLoopControl(true);
         compressor.start();

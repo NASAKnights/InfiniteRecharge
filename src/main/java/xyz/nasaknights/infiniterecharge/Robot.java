@@ -29,6 +29,8 @@ public class Robot extends TimedRobot
     {
         CommandScheduler.getInstance().run();
 
+        RobotContainer.getDrivetrain().runPeriodicServoTask();
+
         SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
 //        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
 //        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());
@@ -90,11 +92,5 @@ public class Robot extends TimedRobot
     public void testPeriodic()
     {
         RobotContainer.getDrivetrain().setDrivetrainNeutral(false);
-    }
-
-    private void shooterCheck()
-    {
-        //        SmartDashboard.putNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get());
-        //        RobotContainer.getShooterSubsystem().set(SmartDashboard.getNumber("Shooter Speed", RobotContainer.getShooterSubsystem().get()));
     }
 }
