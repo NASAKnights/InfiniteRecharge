@@ -11,8 +11,10 @@ public class VisionClient extends Thread
     private Socket visionSocket;
     private BufferedReader serverReader;
     private DataOutputStream serverWriter;
-    private byte NUMBER_OF_VALUES = 3;
+    private byte NUMBER_OF_VALUES = 9;
     private double[] dataArray;
+
+    private String data;
 
     private boolean buttonPressed = false;
 
@@ -66,6 +68,7 @@ public class VisionClient extends Thread
 
     private void parseData(String unparsed)
     {
+        this.data = unparsed;
         String data = unparsed;
         double[] values = new double[NUMBER_OF_VALUES];
 
@@ -83,9 +86,11 @@ public class VisionClient extends Thread
         }
         dataArray = values;
         // these values are very subject to change
-        angle = values[0];
-        throttle = values[1];
-        turn = values[2];
+        // x (0), z (1), dist (2), angle (3), angle2 (4),
+        // OffSetx (5), speed (6), turn (7), gyro (8)
+        angle = values[4];
+        throttle = values[6];
+        turn = values[7];
     }
 
     public void setButtonPressed(boolean pressed)
@@ -121,6 +126,11 @@ public class VisionClient extends Thread
     public double[] getDataArray()
     {
         return dataArray;
+    }
+
+    public String getData()
+    {
+        return data;
     }
 
     /**

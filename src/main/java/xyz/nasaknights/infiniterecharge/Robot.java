@@ -8,6 +8,7 @@ import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.PathFollowCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.paths.ThreeByThree;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.vision.VisionClient;
 
 public class Robot extends TimedRobot
 {
@@ -17,13 +18,15 @@ public class Robot extends TimedRobot
 
     private DriverProfile driverProfile = DriverProfile.BH;
 
+    VisionClient vclnt = RobotContainer.getVisionClient();
+
     @Override
     public void robotInit()
     {
         robotContainer = new RobotContainer();
         RobotContainer.setProfile(driverProfile);
         RobotContainer.getDrivetrain().setMaxSpeeds(driverProfile.getMaxThrottle(), driverProfile.getMaxTurn());
-        RobotContainer.getVisionClient().setLightOn(true);
+        vclnt.setLightOn(true);
     }
 
     @Override
@@ -31,7 +34,7 @@ public class Robot extends TimedRobot
     {
         CommandScheduler.getInstance().run();
 
-        SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getVisionClient().getButtonPressed());
+        SmartDashboard.putBoolean("Vision Control Active", vclnt.getButtonPressed());
         shooterCheck(); // displays and sets the speed of the motor controllers in the shooter subsystem
         //        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
         //        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());
@@ -73,7 +76,7 @@ public class Robot extends TimedRobot
         RobotContainer.getDrivetrain().getDefaultCommand().schedule();
         RobotContainer.getIntake().getDefaultCommand().schedule();
 
-        RobotContainer.getQueuerSubsystem().setBeltPower(.5);
+        //        RobotContainer.getQueuerSubsystem().setBeltPower(.5);
 
         RobotContainer.getShooterSubsystem().setHoodExtended(true);
     }
