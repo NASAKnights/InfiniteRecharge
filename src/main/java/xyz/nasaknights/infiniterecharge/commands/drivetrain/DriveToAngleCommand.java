@@ -42,7 +42,7 @@ public class DriveToAngleCommand extends PIDCommand
     public void initialize()
     {
         m_controller.reset();
-        getIMU().reset();
+        RobotContainer.getIMU().reset();
     }
 
     @Override
