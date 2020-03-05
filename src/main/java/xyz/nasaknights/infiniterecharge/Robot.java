@@ -8,6 +8,7 @@ import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.PathFollowCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.paths.ThreeByThree;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.vision.VisionClient;
 
 public class Robot extends TimedRobot
 {
@@ -15,13 +16,17 @@ public class Robot extends TimedRobot
 
     private RobotContainer robotContainer;
 
+    private DriverProfile driverProfile = DriverProfile.BH;
+
+    VisionClient vclnt = RobotContainer.getVisionClient();
+
     @Override
     public void robotInit()
     {
         robotContainer = new RobotContainer();
+        vclnt.setLightOn(true);
         RobotContainer.setProfile(Constants.CURRENT_DRIVER_PROFILE);
         RobotContainer.getDrivetrain().setMaxSpeeds(Constants.CURRENT_DRIVER_PROFILE.getMaxThrottle(), Constants.CURRENT_DRIVER_PROFILE.getMaxTurn());
-        driveCommand.schedule(); // schedules a Drive Command which cannot be interruptible
     }
 
     @Override

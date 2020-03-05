@@ -77,5 +77,8 @@ public final class Constants
     // SPI Port for NavX
     public static final SPI.Port IMU_PORT = SPI.Port.kMXP;
 
-
+    // Vision Constants
+    public static final String VISION_CLIENT_IP_ADDRESS = "10.1.22.43";
+    public static final short VISION_CLIENT_PORT = 6969;
+    public static final short VISION_CLIENT_LIGHT_SOURCE = 2;
 }

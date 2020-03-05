@@ -56,11 +56,6 @@ public class ControllerRegistry
         return doesDriverWantSquaredInputs;
     }
 
-    public static boolean isShooterButtonHeld()
-    {
-        return operator.getRawButton(PS4ControllerMappings.RIGHT_BUMPER.getID());
-    }
-
     public enum ControllerAssignment
     {
         DRIVER, OPERATOR

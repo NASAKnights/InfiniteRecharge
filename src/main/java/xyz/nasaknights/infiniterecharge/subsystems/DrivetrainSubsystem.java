@@ -72,9 +72,6 @@ public class DrivetrainSubsystem extends SubsystemBase
     // enumerator for keeping track of the default max speeds, defaulted to FULL_SPEED
     private DrivetrainSpeedState speedState = DrivetrainSpeedState.FULL_SPEED;
 
-    // boolean for if the drivetrain is in neutral
-    private boolean neutral;
-
     /**
      * Constructor for the {@link DrivetrainSubsystem} class.
      */
@@ -174,27 +171,6 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightFront.setNeutralMode(NeutralMode.Coast);
         rightRear.setNeutralMode(NeutralMode.Coast);
 
-//        leftMaster.configOpenloopRamp(.25);
-//        leftFront.configOpenloopRamp(.25);
-//        leftRear.configOpenloopRamp(.25);
-//        rightMaster.configOpenloopRamp(.25);
-//        rightFront.configOpenloopRamp(.25);
-//        rightRear.configOpenloopRamp(.25);
-//
-//        leftMaster.configPeakOutputForward(.75);
-//        leftFront.configPeakOutputForward(.75);
-//        leftRear.configPeakOutputForward(.75);
-//        rightMaster.configPeakOutputForward(.75);
-//        rightFront.configPeakOutputForward(.75);
-//        rightRear.configPeakOutputForward(.75);
-//
-//        leftMaster.configPeakOutputReverse(.75);
-//        leftFront.configPeakOutputReverse(.75);
-//        leftRear.configPeakOutputReverse(.75);
-//        rightMaster.configPeakOutputReverse(.75);
-//        rightFront.configPeakOutputReverse(.75);
-//        rightRear.configPeakOutputReverse(.75);
-
         leftMaster.setInverted(false);
         leftFront.setInverted(true);
         leftRear.setInverted(true);
@@ -287,7 +263,7 @@ public class DrivetrainSubsystem extends SubsystemBase
     /**
      * Sets the drivetrain motor percentages by side.
      *
-     * @param left  Target percentage output of the left side
+     * @param left Target percentage output of the left side
      * @param right Target percentage output of the right side
      * @author Bradley Hooten (hello@bradleyh.me)
      */
@@ -295,23 +271,23 @@ public class DrivetrainSubsystem extends SubsystemBase
     {
         System.out.println("LEFT: " + left + "; RIGHT: " + right);
 
-        //        if(left >= .4)
-        //        {
-        //            left = .4;
-        //        }
-        //        else if(left <= .4)
-        //        {
-        //            left = -.4;
-        //        }
-        //
-        //        if(right >= .4)
-        //        {
-        //            right = .4;
-        //        }
-        //        else if(right <= -.4)
-        //        {
-        //            right = -.4;
-        //        }
+//        if(left >= .4)
+//        {
+//            left = .4;
+//        }
+//        else if(left <= .4)
+//        {
+//            left = -.4;
+//        }
+//
+//        if(right >= .4)
+//        {
+//            right = .4;
+//        }
+//        else if(right <= -.4)
+//        {
+//            right = -.4;
+//        }
 
         leftMaster.set(ControlMode.PercentOutput, left);
         leftFront.set(ControlMode.PercentOutput, left);

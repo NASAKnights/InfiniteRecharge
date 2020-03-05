@@ -45,7 +45,7 @@ public class PathFollowCommand extends CommandBase
     private static class LegacyPathFollower extends HelixFollower
     {
         private PIDController heading = new PIDController(0, 0, 0, .001);
-        private PIDController distance = new PIDController(0, 0,  0, .001);
+        private PIDController distance = new PIDController(0, 0, 0, .001);
 
         /**
          * This will import the path class based on the name of the path provided
@@ -105,11 +105,10 @@ public class PathFollowCommand extends CommandBase
 
         public void publicEnd(boolean interrupted)
         {
-            if(interrupted)
+            if (interrupted)
             {
                 this.interrupted();
-            }
-            else
+            } else
             {
                 this.end();
             }

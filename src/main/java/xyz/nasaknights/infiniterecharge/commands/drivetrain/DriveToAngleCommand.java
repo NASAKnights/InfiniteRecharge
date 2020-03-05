@@ -41,6 +41,8 @@ public class DriveToAngleCommand extends PIDCommand
     @Override
     public void initialize()
     {
+        m_controller.reset();
+        getIMU().reset();
     }
 
     @Override

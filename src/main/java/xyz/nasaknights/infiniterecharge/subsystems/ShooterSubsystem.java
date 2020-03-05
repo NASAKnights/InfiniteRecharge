@@ -1,11 +1,9 @@
 package xyz.nasaknights.infiniterecharge.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import xyz.nasaknights.infiniterecharge.Constants;
-import xyz.nasaknights.infiniterecharge.util.control.motors.Lazy_TalonFX;
 import xyz.nasaknights.infiniterecharge.util.control.pneumatics.Lazy_DoubleSolenoid;
 
 public class ShooterSubsystem extends SubsystemBase

@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import xyz.nasaknights.infiniterecharge.subsystems.*;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.vision.VisionClient;
+import xyz.nasaknights.infiniterecharge.util.vision.VisionClient.*;
 
 public class RobotContainer
 {
@@ -21,6 +23,7 @@ public class RobotContainer
     private static Joystick driver = new Joystick(Constants.DRIVER_ID);
     private static Joystick operator = new Joystick(Constants.OPERATOR_ID);
     private static AHRS navx = new AHRS(Constants.IMU_PORT);
+    private static VisionClient visionClient;
 
     public RobotContainer()
     {
@@ -64,6 +67,21 @@ public class RobotContainer
     public static AHRS getIMU()
     {
         return navx;
+    }
+
+    public static VisionClient getVisionClient()
+    {
+        if (visionClient == null)
+        {
+            try
+            {
+                visionClient = new VisionClient(Constants.VISION_CLIENT_IP_ADDRESS, Constants.VISION_CLIENT_PORT);
+            } catch (VisionClientInitializationException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return visionClient;
     }
 
     public static DrivetrainSubsystem getDrivetrain()
