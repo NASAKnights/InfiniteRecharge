@@ -1,6 +1,7 @@
 package xyz.nasaknights.infiniterecharge;
 
 import com.team2363.logger.HelixEvents;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -15,6 +16,8 @@ public class Robot extends TimedRobot
 
     private RobotContainer robotContainer;
 
+    private PWM visionLight = new PWM(2);
+
     @Override
     public void robotInit()
     {
@@ -28,6 +31,10 @@ public class Robot extends TimedRobot
     public void robotPeriodic()
     {
         CommandScheduler.getInstance().run();
+
+        RobotContainer.getDrivetrain().runPeriodicServoTask();
+
+        visionLight.setRaw(1);
 
         SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
 //        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
