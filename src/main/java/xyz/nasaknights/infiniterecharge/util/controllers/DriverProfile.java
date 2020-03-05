@@ -6,7 +6,8 @@ package xyz.nasaknights.infiniterecharge.util.controllers;
 public enum DriverProfile
 {
     DEFAULT(DriveType.CURVATURE_DRIVE, ControlType.GTA, false, 1, 1), AUTONOMOUS(DriveType.ARCADE_DRIVE, ControlType.GTA, false, 1, 1), //when the robot controls itself... why is this a thing (BH) TODO find a way around this
-    BH(DriveType.ARCADE_DRIVE, ControlType.STICKS, false, 1, 1), JG(DriveType.CURVATURE_DRIVE, ControlType.GTA, false, 1, 1), TH(DriveType.CURVATURE_DRIVE, ControlType.GTA, false, 1, 1), TM(DriveType.ARCADE_DRIVE, ControlType.STICKS, false, 1, 1);
+    BH(DriveType.ARCADE_DRIVE, ControlType.STICKS, false, 1, 1), JG(DriveType.CURVATURE_DRIVE, ControlType.GTA, false, 1, 1), TH(DriveType.CURVATURE_DRIVE, ControlType.GTA, false, 1, 1),
+    MK(DriveType.ARCADE_DRIVE, ControlType.GTA, true, .7, .7);
 
     private DriveType driveType;
     private ControlType driveControlType;

@@ -1,12 +1,19 @@
 package xyz.nasaknights.infiniterecharge.commands.drivetrain;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 
-public class DrivetrainShiftCommand extends InstantCommand
+public class DrivetrainShiftCommand extends CommandBase
 {
-    public DrivetrainShiftCommand()
+    @Override
+    public void initialize()
     {
-        super(() -> RobotContainer.getDrivetrain().setHighGear(!RobotContainer.getDrivetrain().isDriveInHighGear()));
+        RobotContainer.getDrivetrain().setHighGear(true);
+    }
+
+    @Override
+    public void end(boolean interrupted)
+    {
+        RobotContainer.getDrivetrain().setHighGear(false);
     }
 }

@@ -38,11 +38,11 @@ public class DriveCommand extends CommandBase
         switch (RobotContainer.getProfile().getControlType())
         {
             case GTA:
-                throttle = rightTrigger - leftTrigger;
+                throttle = -(rightTrigger - leftTrigger);
                 turn = leftXAxis * -1;
                 break;
             case GTA_REVERSED:
-                throttle = leftTrigger - rightTrigger;
+                throttle = -(leftTrigger - rightTrigger);
                 turn = rightXAxis * -1;
                 break;
             case STICKS:

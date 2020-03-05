@@ -5,8 +5,8 @@ import xyz.nasaknights.infiniterecharge.Constants;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.*;
 import xyz.nasaknights.infiniterecharge.commands.intake.IntakeCommand;
 import xyz.nasaknights.infiniterecharge.commands.intake.IntakeExtensionCommand;
-import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
-import xyz.nasaknights.infiniterecharge.commands.shooter.ToggleHoodExtensionCommand;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.DrivetrainShiftCommand;
+import xyz.nasaknights.infiniterecharge.commands.shooter.*;
 
 import static xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings.*;
 
@@ -37,9 +37,14 @@ public class ControllerRegistry
 
         // TODO Add button init here
 
+//        new JoystickButton(operator, PS4ControllerMappings.LEFT_BUMPER.getID()).whileHeld(new IntakeCommand(1));
+//        new JoystickButton(operator, PS4ControllerMappings.RIGHT_BUMPER.getID()).whileHeld(new ShootCommand(), true);
         new JoystickButton(operator, LEFT_BUMPER.getID()).whileHeld(new IntakeCommand(.75));
         new JoystickButton(operator, RIGHT_BUMPER.getID()).whileHeld(new ShootCommand());
 
+//        new JoystickButton(operator, PS4ControllerMappings.SQUARE.getID()).whenPressed(new IntakeExtensionCommand());
+        new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whileHeld(new ShootCommand(false));
+        new JoystickButton(operator, PS4ControllerMappings.CIRCLE.getID()).whileHeld(new ShootCommand(true));
         new JoystickButton(operator, SQUARE.getID()).whenPressed(new IntakeExtensionCommand());
         new JoystickButton(operator, TRIANGLE.getID()).whenPressed(new ToggleHoodExtensionCommand());
     }
@@ -57,5 +62,10 @@ public class ControllerRegistry
     public enum ControllerAssignment
     {
         DRIVER, OPERATOR
+    }
+
+    public static boolean isShooterButtonHeld()
+    {
+        return operator.getRawButton(PS4ControllerMappings.RIGHT_BUMPER.getID());
     }
 }

@@ -17,18 +17,23 @@ public class VariableSpeedIntakeCommand extends CommandBase
     {
         double intakeAxis = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.OPERATOR, PS4ControllerMappings.RIGHT_Y_AXIS.getID());
 
-        if (Math.abs(intakeAxis) > 0.05)
+        if (intakeAxis >= .1)
         {
-            if (!RobotContainer.getIntake().isIntakeExtended())
-                RobotContainer.getIntake().setIntakeExtended(true);
-            RobotContainer.getIntake().setIntakePower(intakeAxis);
+            RobotContainer.getIntake().setIntakeExtended(true);
+            RobotContainer.getQueuerSubsystem().setBeltPower(intakeAxis >= .5 ? -.7 : -.4);
+        } else if (intakeAxis <= -.1)
+        {
+            RobotContainer.getIntake().setIntakeExtended(false);
+
+            RobotContainer.getQueuerSubsystem().setBeltPower(intakeAxis <= -.5 ? .7 : .4);
+            RobotContainer.getQueuerSubsystem().setQueuerIntakePower(-1);
         } else
         {
-            if (RobotContainer.getIntake().isIntakeExtended())
-            {
-                RobotContainer.getIntake().setIntakeExtended(false);
-            }
+            RobotContainer.getQueuerSubsystem().setBeltPower(0);
+            RobotContainer.getIntake().setIntakeExtended(false);
         }
+
+        RobotContainer.getIntake().setIntakePower(intakeAxis);
     }
 
     @Override

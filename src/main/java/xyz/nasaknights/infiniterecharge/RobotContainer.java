@@ -14,7 +14,7 @@ import xyz.nasaknights.infiniterecharge.util.vision.VisionClient.*;
 
 public class RobotContainer
 {
-    private static final Compressor compressor = new Compressor(Constants.PCM_ID);
+//    private static final Compressor compressor = new Compressor(Constants.PCM_ID);
 
     private static final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
     private static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
@@ -32,8 +32,8 @@ public class RobotContainer
         ControllerRegistry.setupDriverJoystick(Constants.DRIVER_ID, Constants.CURRENT_DRIVER_PROFILE);
         ControllerRegistry.setupOperatorJoystick(Constants.OPERATOR_ID, Constants.CURRENT_DRIVER_PROFILE);
 
-        compressor.setClosedLoopControl(true);
-        compressor.start();
+//        compressor.setClosedLoopControl(true); TODO Reenable this
+//        compressor.start();
     }
 
     public static Joystick getDriver()
@@ -94,6 +94,11 @@ public class RobotContainer
     public static IntakeSubsystem getIntake()
     {
         return intakeSubsystem;
+    }
+  
+    public static void initIMU()
+    {
+        navx = new AHRS(Constants.IMU_PORT);
     }
 
     public static double getAutonomousThrottleSpeed()
