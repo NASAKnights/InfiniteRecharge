@@ -30,6 +30,7 @@ public class VariableSpeedIntakeCommand extends CommandBase
         } else
         {
             RobotContainer.getQueuerSubsystem().setBeltPower(0);
+            RobotContainer.getQueuerSubsystem().setQueuerIntakePower(0);
             RobotContainer.getIntake().setIntakeExtended(false);
         }
 

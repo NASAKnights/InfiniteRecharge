@@ -352,8 +352,8 @@ public class DrivetrainSubsystem extends SubsystemBase
 
     public void runPeriodicServoTask()
     {
-        leftNeutralServo.setAngle(isNeutral ? 180 : 160);
-        rightNeutralServo.setAngle(isNeutral ? 0 : 20);
+        leftNeutralServo.setAngle(isNeutral ? 170 : 150);
+        rightNeutralServo.setAngle(isNeutral ? 15 : 35);
     }
 
     public void disableMotors()

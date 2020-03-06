@@ -30,10 +30,11 @@ public class Robot extends TimedRobot
         RobotContainer.setProfile(Constants.CURRENT_DRIVER_PROFILE);
         RobotContainer.getDrivetrain().setMaxSpeeds(Constants.CURRENT_DRIVER_PROFILE.getMaxThrottle(), Constants.CURRENT_DRIVER_PROFILE.getMaxTurn());
         vlight = new Spark(2);
-        RobotContainer.getDrivetrain().setHighGear(false);
-        RobotContainer.getDrivetrain().setDrivetrainNeutral(false);
-        RobotContainer.getDrivetrain().setPowerTakeoffExtended(false);
-        RobotContainer.getClimberSubsystem().setWinchExtended(false);
+
+        RobotContainer.getDrivetrain().setHighGear(false); // low gear
+        RobotContainer.getDrivetrain().setDrivetrainNeutral(false); // drive gear
+        RobotContainer.getDrivetrain().setPowerTakeoffExtended(false); // retract pto
+        RobotContainer.getClimberSubsystem().setWinchExtended(false); // retract winch
     }
 
     @Override

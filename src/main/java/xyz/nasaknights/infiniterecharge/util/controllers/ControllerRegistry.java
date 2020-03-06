@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import xyz.nasaknights.infiniterecharge.*;
 import xyz.nasaknights.infiniterecharge.commands.climb.ExtendWinchSequenceCommand;
-import xyz.nasaknights.infiniterecharge.commands.climb.LockClimbCommand;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveMotorClimbCommand;
+import xyz.nasaknights.infiniterecharge.commands.climb.PrepareDriveToClimbCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DrivetrainShiftCommand;
 import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 
@@ -39,41 +38,12 @@ public class ControllerRegistry
         //        new JoystickButton(operator, PS4ControllerMappings.LEFT_BUMPER.getID()).whileHeld(new IntakeCommand(1));
         //        new JoystickButton(operator, PS4ControllerMappings.RIGHT_BUMPER.getID()).whileHeld(new ShootCommand(), true);
 
-        //        new JoystickButton(operator, PS4ControllerMappings.SQUARE.getID()).whenPressed(new IntakeExtensionCommand());
-        //        new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whileHeld(new ShootCommand(false));
-        //        new JoystickButton(operator, PS4ControllerMappings.CIRCLE.getID()).whileHeld(new ShootCommand(true));
-        //
-        //        new JoystickButton(operator, PS4ControllerMappings.OPTIONS.getID()).whenPressed(new ExtendWinchSequenceCommand());
-        //        new JoystickButton(operator, PS4ControllerMappings.SHARE.getID()).whenPressed(new DriveMotorClimbCommand()).whenReleased(new LockClimbCommand());
+        new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whileHeld(new ShootCommand(false));
+        new JoystickButton(operator, PS4ControllerMappings.CIRCLE.getID()).whileHeld(new ShootCommand(true));
 
-        // toggle power takeoff
-        new JoystickButton(operator, PS4ControllerMappings.X.getID()).whenPressed(new InstantCommand(() ->
-        {
-            RobotContainer.getDrivetrain().setPowerTakeoffExtended(!RobotContainer.getDrivetrain().isInClimbGear());
-            System.out.println("##########################");
-            System.out.println((RobotContainer.getDrivetrain().isInClimbGear()) ? "Switched to climb gear" : "Reverted to drive gear");
-            System.out.println("##########################");
-        }, RobotContainer.getDrivetrain()));
 
-        // toggle drive in neutral
-        new JoystickButton(operator, PS4ControllerMappings.CIRCLE.getID()).whenPressed(new InstantCommand(() ->
-        {
-            RobotContainer.getDrivetrain().setDrivetrainNeutral(!RobotContainer.getDrivetrain().isDriveNeutral());
-            System.out.println("===========================");
-            System.out.println((RobotContainer.getDrivetrain().isDriveNeutral()) ? "Switched drive to neutral" : "Drive is not neutral anymore");
-            System.out.println("===========================");
-        }));
-
-        // toggle climb winch
-        new JoystickButton(operator, PS4ControllerMappings.SQUARE.getID()).whenPressed(new InstantCommand(() ->
-        {
-            RobotContainer.getClimberSubsystem().setWinchExtended(!RobotContainer.getClimberSubsystem().getWinchExtended());
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            System.out.println((RobotContainer.getClimberSubsystem().getWinchExtended()) ? "Extended the climb winch" : "Retracted climb winch");
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        }));
-
-        //new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whileHeld(new DriveMotorClimbCommand());
+        new JoystickButton(operator, PS4ControllerMappings.OPTIONS.getID()).whenPressed(new ExtendWinchSequenceCommand());
+        new JoystickButton(operator, PS4ControllerMappings.SHARE.getID()).whileHeld(new PrepareDriveToClimbCommand(0.80));
     }
 
     public static double getRawAxis(ControllerAssignment controller, int axisID)
