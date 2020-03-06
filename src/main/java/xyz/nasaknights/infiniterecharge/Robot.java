@@ -36,7 +36,7 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().run();
 
         SmartDashboard.putBoolean("Vision Control Active", vclnt.getButtonPressed());
-        shooterCheck(); // displays and sets the speed of the motor controllers in the shooter subsystem
+        // displays and sets the speed of the motor controllers in the shooter subsystem
         //        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
         //        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());
         //        SmartDashboard.putNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD());
