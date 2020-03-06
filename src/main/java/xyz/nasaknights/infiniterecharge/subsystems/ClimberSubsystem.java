@@ -10,7 +10,7 @@ public class ClimberSubsystem extends SubsystemBase
 
     public ClimberSubsystem()
     {
-        winch = new Solenoid(Constants.CLIMB_WINCH_CHANNEL);
+        winch = new Solenoid(Constants.PCM_ID, Constants.CLIMB_WINCH_CHANNEL);
     }
 
     public void setWinchExtended(boolean extended)

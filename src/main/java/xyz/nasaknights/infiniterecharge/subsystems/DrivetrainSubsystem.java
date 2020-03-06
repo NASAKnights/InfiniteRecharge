@@ -35,10 +35,10 @@ public class DrivetrainSubsystem extends SubsystemBase
 {
 
     // TODO Verify these angle values, min is 0, max is 180
-    private static final double LEFT_DRIVE_ANGLE = 0;
-    private static final double LEFT_NEUTRAL_ANGLE = 20;
-    private static final double RIGHT_DRIVE_ANGLE = 180;
-    private static final double RIGHT_NEUTRAL_ANGLE = 160;
+    private static final double LEFT_DRIVE_ANGLE = 180;
+    private static final double LEFT_NEUTRAL_ANGLE = 160;
+    private static final double RIGHT_DRIVE_ANGLE = 0;
+    private static final double RIGHT_NEUTRAL_ANGLE = 20;
 
     private boolean isNeutral = false;
 
@@ -47,8 +47,7 @@ public class DrivetrainSubsystem extends SubsystemBase
     private DifferentialDrive drive; // standard library drive for West Coast drivetrains
 
     // declarations of the motor controllers
-    private Lazy_WPI_TalonFX leftMaster,
-            leftFront,
+    private Lazy_WPI_TalonFX leftMaster, leftFront,
             leftRear,
             rightMaster,
             rightFront,
@@ -339,6 +338,11 @@ public class DrivetrainSubsystem extends SubsystemBase
     public void setDrivetrainNeutral(boolean isNeutral)
     {
         this.isNeutral = isNeutral;
+    }
+
+    public boolean isDriveNeutral()
+    {
+        return isNeutral;
     }
 
     public enum DrivetrainSpeedState
