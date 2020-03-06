@@ -9,7 +9,6 @@ import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.PathFollowCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.paths.ThreeByThree;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
-import xyz.nasaknights.infiniterecharge.util.vision.VisionClient;
 
 public class Robot extends TimedRobot
 {
@@ -31,6 +30,10 @@ public class Robot extends TimedRobot
         RobotContainer.setProfile(Constants.CURRENT_DRIVER_PROFILE);
         RobotContainer.getDrivetrain().setMaxSpeeds(Constants.CURRENT_DRIVER_PROFILE.getMaxThrottle(), Constants.CURRENT_DRIVER_PROFILE.getMaxTurn());
         vlight = new Spark(2);
+        RobotContainer.getDrivetrain().setHighGear(false);
+        RobotContainer.getDrivetrain().setDrivetrainNeutral(false);
+        RobotContainer.getDrivetrain().setPowerTakeoffExtended(false);
+        RobotContainer.getClimberSubsystem().setWinchExtended(false);
     }
 
     @Override
