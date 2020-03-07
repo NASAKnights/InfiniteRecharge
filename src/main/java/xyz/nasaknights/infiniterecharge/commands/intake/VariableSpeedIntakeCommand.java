@@ -34,7 +34,7 @@ public class VariableSpeedIntakeCommand extends CommandBase
             RobotContainer.getIntake().setIntakeExtended(false);
         }
 
-        RobotContainer.getIntake().setIntakePower(intakeAxis);
+        RobotContainer.getIntake().setIntakePower(-intakeAxis);
     }
 
     @Override

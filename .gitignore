@@ -9,6 +9,8 @@ build/
 bin/
 .idea/
 .gradle/
+*.sh
 
 *.prefs
 ._.DS_Store
+*.lock

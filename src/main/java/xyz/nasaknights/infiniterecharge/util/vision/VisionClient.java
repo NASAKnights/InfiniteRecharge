@@ -3,7 +3,9 @@ package xyz.nasaknights.infiniterecharge.util.vision;
 import edu.wpi.first.wpilibj.Spark;
 import xyz.nasaknights.infiniterecharge.Constants;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class VisionClient extends Thread
@@ -105,7 +107,7 @@ public class VisionClient extends Thread
 
     public void setLightOn(boolean on)
     {
-        light.set(on ? 1 : 0);
+        light.set(on ? -1 : 0);
     }
 
     public double getAngle()

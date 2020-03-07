@@ -1,7 +1,6 @@
 package xyz.nasaknights.infiniterecharge;
 
 import com.team2363.logger.HelixEvents;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,25 +15,22 @@ public class Robot extends TimedRobot
 
     private RobotContainer robotContainer;
 
-    private Spark vlight;
-
     private DriverProfile driverProfile = DriverProfile.BH;
 
-    //    VisionClient vclnt = RobotContainer.getVisionClient();
+//    VisionClient vclnt = RobotContainer.getVisionClient();
 
     @Override
     public void robotInit()
     {
         robotContainer = new RobotContainer();
-        //        vclnt.setLightOn(true);
+//        vclnt.setLightOn(false);
         RobotContainer.setProfile(Constants.CURRENT_DRIVER_PROFILE);
         RobotContainer.getDrivetrain().setMaxSpeeds(Constants.CURRENT_DRIVER_PROFILE.getMaxThrottle(), Constants.CURRENT_DRIVER_PROFILE.getMaxTurn());
-        vlight = new Spark(2);
 
         RobotContainer.getDrivetrain().setHighGear(false); // low gear
         RobotContainer.getDrivetrain().setDrivetrainNeutral(false); // drive gear
         RobotContainer.getDrivetrain().setPowerTakeoffExtended(false); // retract pto
-        RobotContainer.getClimberSubsystem().setWinchExtended(false); // retract winch
+        RobotContainer.getClimberSubsystem().setClimbArmExtended(false); // retract winch
     }
 
     @Override
@@ -51,7 +47,6 @@ public class Robot extends TimedRobot
 //        RobotContainer.getDrivetrain().setTurnP(SmartDashboard.getNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP()));
 //        RobotContainer.getDrivetrain().setTurnI(SmartDashboard.getNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI()));
 //        RobotContainer.getDrivetrain().setTurnD(SmartDashboard.getNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD()));
-        vlight.set(-1);
     }
 
     @Override

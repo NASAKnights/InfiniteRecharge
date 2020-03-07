@@ -6,20 +6,20 @@ import xyz.nasaknights.infiniterecharge.Constants;
 
 public class ClimberSubsystem extends SubsystemBase
 {
-    Solenoid winch;
+    Solenoid climberArm;
 
     public ClimberSubsystem()
     {
-        winch = new Solenoid(Constants.PCM_ID, Constants.CLIMB_WINCH_CHANNEL);
+        climberArm = new Solenoid(Constants.PCM_ID, Constants.CLIMB_WINCH_CHANNEL);
     }
 
-    public void setWinchExtended(boolean extended)
+    public boolean isClimbArmExtended()
     {
-        winch.set(extended);
+        return climberArm.get();
     }
 
-    public boolean getWinchExtended()
+    public void setClimbArmExtended(boolean extended)
     {
-        return winch.get();
+        climberArm.set(extended);
     }
 }

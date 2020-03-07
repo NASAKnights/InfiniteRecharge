@@ -1,7 +1,9 @@
 package xyz.nasaknights.infiniterecharge.commands.climb;
 
-import edu.wpi.first.wpilibj2.command.*;
-import xyz.nasaknights.infiniterecharge.Robot;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 
@@ -23,7 +25,7 @@ public class PrepareDriveToClimbCommand extends SequentialCommandGroup
             System.out.println("####################\n");
             System.out.println("# Retracting Winch #");
             System.out.println("\n####################");
-            getClimberSubsystem().setWinchExtended(false);
+            getClimberSubsystem().setClimbArmExtended(false);
         }), new InstantCommand(() -> RobotContainer.getDrivetrain().prepareClimbMotors()));
         addRequirements(getDrivetrain());
         this.power = power;

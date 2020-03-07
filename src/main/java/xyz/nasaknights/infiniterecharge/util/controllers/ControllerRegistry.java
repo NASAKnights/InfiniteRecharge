@@ -2,10 +2,12 @@ package xyz.nasaknights.infiniterecharge.util.controllers;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import xyz.nasaknights.infiniterecharge.*;
-import xyz.nasaknights.infiniterecharge.commands.climb.ExtendWinchSequenceCommand;
-import xyz.nasaknights.infiniterecharge.commands.climb.PrepareDriveToClimbCommand;
+import xyz.nasaknights.infiniterecharge.Constants;
+import xyz.nasaknights.infiniterecharge.RobotContainer;
+import xyz.nasaknights.infiniterecharge.commands.climb.ExtendClimbArmCommand;
+import xyz.nasaknights.infiniterecharge.commands.climb.RetractClimbArmCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DrivetrainShiftCommand;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.VisionDriveAssistCommand;
 import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 
 
@@ -27,6 +29,11 @@ public class ControllerRegistry
         // TODO Add button init here
 
         new JoystickButton(driver, PS4ControllerMappings.SQUARE.getID()).whileHeld(new DrivetrainShiftCommand());
+
+        new JoystickButton(driver, PS4ControllerMappings.X.getID()).whileHeld(new VisionDriveAssistCommand());
+
+        new JoystickButton(driver, PS4ControllerMappings.RIGHT_BUMPER.getID()).whenPressed(new InstantCommand(() -> RobotContainer.getDrivetrain().setDrivetrainNeutral(false)));
+        new JoystickButton(driver, PS4ControllerMappings.LEFT_BUMPER.getID()).whenPressed(new InstantCommand(() -> RobotContainer.getDrivetrain().setDrivetrainNeutral(true)));
     }
 
     public static void setupOperatorJoystick(int port, DriverProfile profile)
@@ -41,9 +48,8 @@ public class ControllerRegistry
         new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whileHeld(new ShootCommand(false));
         new JoystickButton(operator, PS4ControllerMappings.CIRCLE.getID()).whileHeld(new ShootCommand(true));
 
-
-        new JoystickButton(operator, PS4ControllerMappings.OPTIONS.getID()).whenPressed(new ExtendWinchSequenceCommand());
-        new JoystickButton(operator, PS4ControllerMappings.SHARE.getID()).whileHeld(new PrepareDriveToClimbCommand(0.80));
+        new JoystickButton(operator, PS4ControllerMappings.OPTIONS.getID()).whenPressed(new ExtendClimbArmCommand());
+        new JoystickButton(operator, PS4ControllerMappings.SHARE.getID()).whileHeld(new RetractClimbArmCommand());
     }
 
     public static double getRawAxis(ControllerAssignment controller, int axisID)

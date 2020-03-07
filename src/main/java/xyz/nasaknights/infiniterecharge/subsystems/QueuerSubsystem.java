@@ -21,8 +21,8 @@ public class QueuerSubsystem extends SubsystemBase
 
     public void setBeltPower(double power)
     {
-        leftBelt.set(ControlMode.PercentOutput, power);
-        rightBelt.set(ControlMode.PercentOutput, -power);
+        leftBelt.set(ControlMode.PercentOutput, -power);
+        rightBelt.set(ControlMode.PercentOutput, power);
     }
 
     public void setQueuerIntakePower(double power)
