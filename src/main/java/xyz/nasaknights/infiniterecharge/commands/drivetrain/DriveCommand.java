@@ -24,6 +24,7 @@ public class DriveCommand extends CommandBase
     @Override
     public void initialize()
     {
+        RobotContainer.getDrivetrain().prepareDriveMotors();
     }
 
     @Override
@@ -38,7 +39,6 @@ public class DriveCommand extends CommandBase
 
         double leftYAxis = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, LEFT_Y_AXIS.getID());
         double rightXAxis = ControllerRegistry.getRawAxis(ControllerRegistry.ControllerAssignment.DRIVER, RIGHT_X_AXIS.getID());
-
 
         switch (RobotContainer.getProfile().getControlType())
         {

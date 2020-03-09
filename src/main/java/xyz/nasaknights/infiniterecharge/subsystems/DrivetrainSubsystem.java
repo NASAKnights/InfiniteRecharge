@@ -156,6 +156,16 @@ public class DrivetrainSubsystem extends SubsystemBase
         left = new SpeedControllerGroup(leftMaster, leftFront, leftRear);
         right = new SpeedControllerGroup(rightMaster, rightFront, rightRear);
 
+        prepareDriveMotors();
+
+        drive = new DifferentialDrive(left, right);
+
+        leftNeutralServo = new Servo(Constants.LEFT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
+        rightNeutralServo = new Servo(Constants.RIGHT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
+    }
+
+    public void prepareClimbMotors()
+    {
         leftMaster.configFactoryDefault();
         leftFront.configFactoryDefault();
         leftRear.configFactoryDefault();
@@ -178,20 +188,12 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightFront.setInverted(true);
         rightRear.setInverted(true);
 
-        drive = new DifferentialDrive(left, right);
-
-        leftNeutralServo = new Servo(Constants.LEFT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
-        rightNeutralServo = new Servo(Constants.RIGHT_DRIVETRAIN_NEUTRAL_SERVO_PWM_ID);
-    }
-
-    public void prepareClimbMotors()
-    {
         // climb current limit configuration, so we don't break the robot as we climb
         StatorCurrentLimitConfiguration climbStator = new StatorCurrentLimitConfiguration()
         {{
             enable = true; //enables current limiting
 
-            currentLimit = 8; // 20 percent power
+            currentLimit = 26;
             triggerThresholdCurrent = 8; //starts limit at 20 percent power
             triggerThresholdTime = 0; //starts limiting 0 seconds after threshold current is reached
         }};
@@ -203,6 +205,39 @@ public class DrivetrainSubsystem extends SubsystemBase
         rightMaster.configStatorCurrentLimit(climbStator);
         rightFront.configStatorCurrentLimit(climbStator);
         rightRear.configStatorCurrentLimit(climbStator);
+
+        leftMaster.configOpenloopRamp(1);
+        leftFront.configOpenloopRamp(1);
+        leftRear.configOpenloopRamp(1);
+
+        rightMaster.configOpenloopRamp(1);
+        rightFront.configOpenloopRamp(1);
+        rightRear.configOpenloopRamp(1);
+    }
+
+    public void prepareDriveMotors()
+    {
+        leftMaster.configFactoryDefault();
+        leftFront.configFactoryDefault();
+        leftRear.configFactoryDefault();
+        rightMaster.configFactoryDefault();
+        rightFront.configFactoryDefault();
+        rightRear.configFactoryDefault();
+
+        leftMaster.setNeutralMode(NeutralMode.Coast);
+        leftFront.setNeutralMode(NeutralMode.Coast);
+        leftRear.setNeutralMode(NeutralMode.Coast);
+        rightMaster.setNeutralMode(NeutralMode.Coast);
+        rightFront.setNeutralMode(NeutralMode.Coast);
+        rightRear.setNeutralMode(NeutralMode.Coast);
+
+        leftMaster.setInverted(false);
+        leftFront.setInverted(true);
+        leftRear.setInverted(true);
+
+        rightMaster.setInverted(false);
+        rightFront.setInverted(true);
+        rightRear.setInverted(true);
     }
 
     private void initPneumatics()

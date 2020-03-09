@@ -7,7 +7,7 @@ import xyz.nasaknights.infiniterecharge.subsystems.*;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
 import xyz.nasaknights.infiniterecharge.util.vision.VisionClient;
-import xyz.nasaknights.infiniterecharge.util.vision.VisionClient.*;
+import xyz.nasaknights.infiniterecharge.util.vision.VisionClient.VisionClientInitializationException;
 
 public class RobotContainer
 {
@@ -19,39 +19,19 @@ public class RobotContainer
     private static final QueuerSubsystem queuerSubsystem = new QueuerSubsystem();
     private static final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
-    private static DriverProfile profile;
+    private static DriverProfile profile = Constants.CURRENT_DRIVER_PROFILE;
     private static Joystick driver = new Joystick(Constants.DRIVER_ID);
     private static Joystick operator = new Joystick(Constants.OPERATOR_ID);
     private static AHRS navx = new AHRS(Constants.IMU_PORT);
     private static VisionClient visionClient;
 
-    public RobotContainer()
+    static
     {
         ControllerRegistry.setupDriverJoystick(Constants.DRIVER_ID, Constants.CURRENT_DRIVER_PROFILE);
         ControllerRegistry.setupOperatorJoystick(Constants.OPERATOR_ID, Constants.CURRENT_DRIVER_PROFILE);
 
         compressor.setClosedLoopControl(true);
         compressor.start();
-    }
-
-    public static Joystick getDriver()
-    {
-        return driver;
-    }
-
-    public static double getDriverRawAxis(int axis)
-    {
-        return getDriver().getRawAxis(axis);
-    }
-
-    public static Joystick getOperator()
-    {
-        return operator;
-    }
-
-    public static double getOperatorRawAxis(int axis)
-    {
-        return getOperator().getRawAxis(axis);
     }
 
     public static DriverProfile getProfile()
@@ -93,21 +73,6 @@ public class RobotContainer
     {
         return intakeSubsystem;
     }
-  
-    public static void initIMU()
-    {
-        navx = new AHRS(Constants.IMU_PORT);
-    }
-
-    public static double getAutonomousThrottleSpeed()
-    {
-        return 0.0;
-    }
-
-    public static double getAutonomousTurnSpeed()
-    {
-        return 0.0;
-    }
 
     public static ShooterSubsystem getShooterSubsystem()
     {
@@ -123,10 +88,4 @@ public class RobotContainer
     {
         return climberSubsystem;
     }
-
-    //    public Command getAutonomousCommand()
-    //    {
-    //        // TODO Work on autonomous?
-    //        return autonomousCommand;
-    //    }
 }

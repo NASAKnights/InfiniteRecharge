@@ -3,11 +3,13 @@ package xyz.nasaknights.infiniterecharge.commands.shooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 
+import java.util.concurrent.TimeUnit;
+
 public class ShootCommand extends CommandBase
 {
     private boolean far;
     private long totalTime;
-    private boolean hasReachedTarget = false;
+//    private boolean hasReachedTarget = false;
 
     public ShootCommand(boolean far)
     {
@@ -30,17 +32,22 @@ public class ShootCommand extends CommandBase
     @Override
     public void execute()
     {
-        RobotContainer.getShooterSubsystem().setTargetShooterRPM(16000);
+//        RobotContainer.getShooterSubsystem().setTargetShooterRPM(far ? 16000 : 14000);
+        RobotContainer.getShooterSubsystem().set(far ? .87 : .77);
+//        if (RobotContainer.getShooterSubsystem().isShooterUpToSpeed() && !hasReachedTarget)
+//        {
+//            totalTime = System.currentTimeMillis() - totalTime;
+//            hasReachedTarget = true;
+//            System.out.println("Reached target in " + totalTime + " ms");
+//        }
 
-        if (RobotContainer.getShooterSubsystem().isShooterUpToSpeed() && !hasReachedTarget)
+        // Temporary fix due to disablement of right shooter motor due to mechanical malfunction
+        if (System.currentTimeMillis() >= totalTime + TimeUnit.SECONDS.toMillis(1))
         {
-            totalTime = System.currentTimeMillis() - totalTime;
-            hasReachedTarget = true;
-            System.out.println("Reached target in " + totalTime + " ms");
+            RobotContainer.getQueuerSubsystem().setQueuerIntakePower(RobotContainer.getShooterSubsystem().isShooterUpToSpeed() ? .7 : 0);
         }
 
-        RobotContainer.getQueuerSubsystem().setQueuerIntakePower(RobotContainer.getShooterSubsystem().isShooterUpToSpeed() ? 1 : 0);
-        RobotContainer.getQueuerSubsystem().setBeltPower(RobotContainer.getShooterSubsystem().isShooterUpToSpeed() ? 1 : 0);
+        RobotContainer.getQueuerSubsystem().setBeltPower(RobotContainer.getShooterSubsystem().isShooterUpToSpeed() ? .75 : 0);
     }
 
     @Override

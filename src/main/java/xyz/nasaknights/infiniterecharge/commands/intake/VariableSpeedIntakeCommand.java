@@ -20,13 +20,13 @@ public class VariableSpeedIntakeCommand extends CommandBase
         if (intakeAxis >= .1)
         {
             RobotContainer.getIntake().setIntakeExtended(true);
-            RobotContainer.getQueuerSubsystem().setBeltPower(intakeAxis >= .5 ? -.7 : -.4);
+            RobotContainer.getQueuerSubsystem().setBeltPower(intakeAxis >= .5 ? .5 : .4);
         } else if (intakeAxis <= -.1)
         {
             RobotContainer.getIntake().setIntakeExtended(false);
 
-            RobotContainer.getQueuerSubsystem().setBeltPower(intakeAxis <= -.5 ? .7 : .4);
-            RobotContainer.getQueuerSubsystem().setQueuerIntakePower(-1);
+            RobotContainer.getQueuerSubsystem().setBeltPower(intakeAxis <= -.5 ? -.5 : -.4);
+            RobotContainer.getQueuerSubsystem().setQueuerIntakePower(-.5);
         } else
         {
             RobotContainer.getQueuerSubsystem().setBeltPower(0);
@@ -34,7 +34,7 @@ public class VariableSpeedIntakeCommand extends CommandBase
             RobotContainer.getIntake().setIntakeExtended(false);
         }
 
-        RobotContainer.getIntake().setIntakePower(-intakeAxis);
+        RobotContainer.getIntake().setIntakePower(-intakeAxis * .7);
     }
 
     @Override

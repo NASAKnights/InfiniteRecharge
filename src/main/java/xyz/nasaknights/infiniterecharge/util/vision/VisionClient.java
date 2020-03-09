@@ -59,7 +59,7 @@ public class VisionClient extends Thread
         try
         {
             // verify what needs to be written to the vision server
-            serverWriter.writeByte((buttonPressed) ? 1 : 0);
+            serverWriter.writeChars(((buttonPressed) ? 1 : 0) + "\n");
             String data = serverReader.readLine();
             parseData(data);
         } catch (Exception e)

@@ -14,14 +14,14 @@ public class ExtendClimbArmCommand extends SequentialCommandGroup // TODO make i
         super(new InstantCommand(() ->
         {
             getDrivetrain().setDrivetrainNeutral(true);
-            getDrivetrain().setPowerTakeoffExtended(true);
+            getDrivetrain().setPowerTakeoffExtended(false);
         }, getDrivetrain()), new WaitCommand(.25), new InstantCommand(() ->
         {
-            getClimberSubsystem().setClimbArmExtended(true);
             getDrivetrain().setHighGear(true);
-        }, getClimberSubsystem(), getDrivetrain()), new WaitCommand(4), new InstantCommand(() ->
+            getClimberSubsystem().setClimbArmExtended(true);
+        }, getClimberSubsystem(), getDrivetrain()), /*new TimedArcadeDriveCommand(4, .3),*/ new WaitCommand(3), new InstantCommand(() ->
         {
-//            getDrivetrain().setPowerTakeoffExtended(true);
+            getDrivetrain().setPowerTakeoffExtended(false);
             getDrivetrain().setHighGear(false);
 //            new PrepareDriveToClimbCommand(.8).schedule();
         }, getDrivetrain()));

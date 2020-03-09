@@ -1,36 +1,41 @@
 package xyz.nasaknights.infiniterecharge;
 
-import com.team2363.logger.HelixEvents;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.PathFollowCommand;
-import xyz.nasaknights.infiniterecharge.commands.drivetrain.paths.ThreeByThree;
+import xyz.nasaknights.infiniterecharge.commands.drivetrain.TimedArcadeDriveCommand;
+import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.vision.VisionClient;
+
+import java.util.concurrent.TimeUnit;
 
 public class Robot extends TimedRobot
 {
+    private final ShootCommand autonomousShootCommand = new ShootCommand(true);
+    private final TimedArcadeDriveCommand autonomousDriveCommand = new TimedArcadeDriveCommand(TimeUnit.SECONDS.toMillis(2), .7);
+    VisionClient vclnt = RobotContainer.getVisionClient();
+
     private static DriveCommand driveCommand = new DriveCommand();
-
-    private RobotContainer robotContainer;
-
-    private DriverProfile driverProfile = DriverProfile.BH;
-
-//    VisionClient vclnt = RobotContainer.getVisionClient();
+    private long autonomousStart;
+    private boolean driveStarted = false; // autonomous boolean to check if drive command has started
 
     @Override
     public void robotInit()
     {
-        robotContainer = new RobotContainer();
-//        vclnt.setLightOn(false);
+        //
+        //          NOTHING BEFORE HERE
+        //
+
         RobotContainer.setProfile(Constants.CURRENT_DRIVER_PROFILE);
         RobotContainer.getDrivetrain().setMaxSpeeds(Constants.CURRENT_DRIVER_PROFILE.getMaxThrottle(), Constants.CURRENT_DRIVER_PROFILE.getMaxTurn());
+        driveCommand.schedule(); // schedules a Drive Command which cannot be interruptible
 
-        RobotContainer.getDrivetrain().setHighGear(false); // low gear
-        RobotContainer.getDrivetrain().setDrivetrainNeutral(false); // drive gear
-        RobotContainer.getDrivetrain().setPowerTakeoffExtended(false); // retract pto
-        RobotContainer.getClimberSubsystem().setClimbArmExtended(false); // retract winch
+        driveStarted = false;
+
+        RobotContainer.getDrivetrain().setDrivetrainNeutral(false);
+        RobotContainer.getDrivetrain().setHighGear(false);
     }
 
     @Override
@@ -62,15 +67,26 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousInit()
     {
-        HelixEvents.getInstance().startLogging();
-        RobotContainer.getDrivetrain().resetEncoders();
-        RobotContainer.getIMU().reset();
-        new PathFollowCommand(new ThreeByThree()).schedule();
+//        HelixEvents.getInstance().startLogging();
+//        RobotContainer.getDrivetrain().resetEncoders();
+//        RobotContainer.getIMU().reset();
+//        new PathFollowCommand(new ThreeByThree()).schedule();
+
+        autonomousStart = System.currentTimeMillis();
+
+        autonomousShootCommand.schedule();
     }
 
     @Override
     public void autonomousPeriodic()
     {
+        if ((System.currentTimeMillis() > (autonomousStart + TimeUnit.SECONDS.toMillis(8))) && autonomousShootCommand.isScheduled() && !autonomousDriveCommand.isScheduled() && !driveStarted)
+        {
+            autonomousShootCommand.end(true);
+            driveStarted = true;
+            autonomousDriveCommand.schedule();
+        }
+//        else if(autonomousDriveCommand.isScheduled())
     }
 
     @Override

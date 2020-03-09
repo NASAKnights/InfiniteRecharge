@@ -24,13 +24,14 @@ public class VisionDriveAssistCommand extends CommandBase
     {
         System.out.println("Starting Vision Drive");
         RobotContainer.getVisionClient().setButtonPressed(true);
+        RobotContainer.getVisionClient().setLightOn(true);
     }
 
     @Override
     public void execute()
     {
         System.out.println("Vision Turn: " + RobotContainer.getVisionClient().getTurn());
-        RobotContainer.getDrivetrain().arcadeDrive(0, RobotContainer.getVisionClient().getTurn(), false);
+        RobotContainer.getDrivetrain().arcadeDrive(0.25, RobotContainer.getVisionClient().getTurn(), false);
     }
 
     @Override
@@ -45,5 +46,6 @@ public class VisionDriveAssistCommand extends CommandBase
         System.out.println("Ending Vision Drive");
         RobotContainer.getVisionClient().setButtonPressed(false);
         RobotContainer.getDrivetrain().getDefaultCommand().schedule();
+        RobotContainer.getVisionClient().setLightOn(false);
     }
 }
