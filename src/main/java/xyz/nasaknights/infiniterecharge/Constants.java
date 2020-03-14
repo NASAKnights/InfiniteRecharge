@@ -36,6 +36,9 @@ public final class Constants
     // Intake Subsystem
     public static final int INTAKE_VICTOR = 9;
 
+    // Climb Subsystem
+    public static final short LEFT_CLIMB_SPARK_MAX = 13;
+    public static final short RIGHT_CLIMB_SPARK_MAX = 14;
 
     ///////////////////////////////////////////////////////////////////////////////
     //                         Pneumatic Constants                               //
@@ -81,4 +84,7 @@ public final class Constants
     public static final String VISION_CLIENT_IP_ADDRESS = "10.1.22.43";
     public static final short VISION_CLIENT_PORT = 6969;
     public static final short VISION_CLIENT_LIGHT_SOURCE = 2;
+
+    // Indicator Lights Constants
+    public static final short INDICATOR_LIGHTS_SPARK = 0; // TODO To be set later
 }

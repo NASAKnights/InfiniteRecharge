@@ -2,6 +2,7 @@ package xyz.nasaknights.infiniterecharge.commands.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
+import xyz.nasaknights.infiniterecharge.util.lighting.IndicatorLightUtil;
 
 import static java.lang.Math.abs;
 
@@ -31,7 +32,7 @@ public class VisionDriveAssistCommand extends CommandBase
     public void execute()
     {
         System.out.println("Vision Turn: " + RobotContainer.getVisionClient().getTurn());
-        RobotContainer.getDrivetrain().arcadeDrive(0.25, RobotContainer.getVisionClient().getTurn(), false);
+        RobotContainer.getDrivetrain().arcadeDrive(0.00, RobotContainer.getVisionClient().getTurn(), false);
     }
 
     @Override
@@ -43,9 +44,5 @@ public class VisionDriveAssistCommand extends CommandBase
     @Override
     public void end(boolean interrupted)
     {
-        System.out.println("Ending Vision Drive");
-        RobotContainer.getVisionClient().setButtonPressed(false);
-        RobotContainer.getDrivetrain().getDefaultCommand().schedule();
-        RobotContainer.getVisionClient().setLightOn(false);
     }
 }

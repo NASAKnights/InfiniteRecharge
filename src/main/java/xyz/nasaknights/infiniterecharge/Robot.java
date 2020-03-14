@@ -2,11 +2,13 @@ package xyz.nasaknights.infiniterecharge;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.TimedArcadeDriveCommand;
 import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 import xyz.nasaknights.infiniterecharge.util.controllers.DriverProfile;
+import xyz.nasaknights.infiniterecharge.util.lighting.IndicatorLightUtil;
 import xyz.nasaknights.infiniterecharge.util.vision.VisionClient;
 
 import java.util.concurrent.TimeUnit;
@@ -15,7 +17,7 @@ public class Robot extends TimedRobot
 {
     private final ShootCommand autonomousShootCommand = new ShootCommand(true);
     private final TimedArcadeDriveCommand autonomousDriveCommand = new TimedArcadeDriveCommand(TimeUnit.SECONDS.toMillis(2), .7);
-    VisionClient vclnt = RobotContainer.getVisionClient();
+    VisionClient visionClient;
 
     private static DriveCommand driveCommand = new DriveCommand();
     private long autonomousStart;
@@ -28,9 +30,10 @@ public class Robot extends TimedRobot
         //          NOTHING BEFORE HERE
         //
 
+        visionClient = RobotContainer.getVisionClient();
+
         RobotContainer.setProfile(Constants.CURRENT_DRIVER_PROFILE);
         RobotContainer.getDrivetrain().setMaxSpeeds(Constants.CURRENT_DRIVER_PROFILE.getMaxThrottle(), Constants.CURRENT_DRIVER_PROFILE.getMaxTurn());
-        driveCommand.schedule(); // schedules a Drive Command which cannot be interruptible
 
         driveStarted = false;
 
@@ -43,15 +46,14 @@ public class Robot extends TimedRobot
     {
         CommandScheduler.getInstance().run();
 
-        RobotContainer.getDrivetrain().runPeriodicServoTask();
+        //        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());
+        //        SmartDashboard.putNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD());
+        //        RobotContainer.getDrivetrain().setTurnP(SmartDashboard.getNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP()));
+        //        RobotContainer.getDrivetrain().setTurnI(SmartDashboard.getNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI()));
+        //        RobotContainer.getDrivetrain().setTurnD(SmartDashboard.getNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD()));
 
-        SmartDashboard.putBoolean("Vision Control Active", RobotContainer.getProfile() == DriverProfile.AUTONOMOUS);
-//        SmartDashboard.putNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP());
-//        SmartDashboard.putNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI());
-//        SmartDashboard.putNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD());
-//        RobotContainer.getDrivetrain().setTurnP(SmartDashboard.getNumber("Turn Controller Proportional", RobotContainer.getDrivetrain().getTurnP()));
-//        RobotContainer.getDrivetrain().setTurnI(SmartDashboard.getNumber("Turn Controller Integral", RobotContainer.getDrivetrain().getTurnI()));
-//        RobotContainer.getDrivetrain().setTurnD(SmartDashboard.getNumber("Turn Controller Derivative", RobotContainer.getDrivetrain().getTurnD()));
+        //        SmartDashboard.putNumber("Vision Client Distance", Units.metersToFeet(visionClient.getDistance() * 100));
+        //        SmartDashboard.putNumber("", visionClient.getAngle());
     }
 
     @Override
@@ -80,13 +82,12 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousPeriodic()
     {
-        if ((System.currentTimeMillis() > (autonomousStart + TimeUnit.SECONDS.toMillis(8))) && autonomousShootCommand.isScheduled() && !autonomousDriveCommand.isScheduled() && !driveStarted)
+        if (isAutonomousShootCommandDone(8))
         {
             autonomousShootCommand.end(true);
             driveStarted = true;
             autonomousDriveCommand.schedule();
         }
-//        else if(autonomousDriveCommand.isScheduled())
     }
 
     @Override
@@ -104,6 +105,7 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic()
     {
+        shooterTuning();
     }
 
     @Override
@@ -117,5 +119,32 @@ public class Robot extends TimedRobot
     public void testPeriodic()
     {
         RobotContainer.getDrivetrain().setDrivetrainNeutral(false);
+    }
+
+    private boolean isAutonomousShootCommandDone(long secondsUntilDriveCommand)
+    {
+
+        // if number of seconds has elapsed, is shooting, is not driving, and drive has not started
+        return (System.currentTimeMillis() > (autonomousStart + TimeUnit.SECONDS.toMillis(secondsUntilDriveCommand))) && autonomousShootCommand.isScheduled() && !autonomousDriveCommand.isScheduled() && !driveStarted;
+
+    }
+
+    private void shooterTuning()
+    {
+
+        // rpm setter
+        RobotContainer.getShooterSubsystem().setTargetShooterRPM((int) SmartDashboard.getNumber("Shooter RPM", RobotContainer.getShooterSubsystem().getTargetRPM()));
+
+        // shooter proportional setter
+        RobotContainer.getShooterSubsystem().setFlywheelProportional(SmartDashboard.getNumber("Shooter Proportional", RobotContainer.getShooterSubsystem().getFlywheelProportional()));
+
+        // shooter integral setter
+        RobotContainer.getShooterSubsystem().setFlywheelIntegral(SmartDashboard.getNumber("Shooter Integral", RobotContainer.getShooterSubsystem().getFlywheelIntegral()));
+
+        // shooter derivative setter
+        RobotContainer.getShooterSubsystem().setFlywheelDerivative(SmartDashboard.getNumber("Shooter Derivative", RobotContainer.getShooterSubsystem().getFlywheelDerivative()));
+
+        // shooter feed forward setter
+        RobotContainer.getShooterSubsystem().setFlywheelFeedForward(SmartDashboard.getNumber("Shooter Feed Forward", RobotContainer.getShooterSubsystem().getFlywheelFeedForward()));
     }
 }

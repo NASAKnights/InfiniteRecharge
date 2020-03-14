@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.util.controllers.ControllerRegistry;
+import xyz.nasaknights.infiniterecharge.util.lighting.IndicatorLightUtil;
 
 public class RetractClimbArmCommand extends SequentialCommandGroup
 {
@@ -47,8 +48,11 @@ public class RetractClimbArmCommand extends SequentialCommandGroup
                         System.out.println(!releasePneumatics ? !ControllerRegistry.isOperatorLeftBumperPressed() : !ControllerRegistry.isOperatorSharePressed());
                         return (!releasePneumatics ? !ControllerRegistry.isOperatorLeftBumperPressed() : !ControllerRegistry.isOperatorSharePressed());
                     }
-                },
-                new InstantCommand(() -> RobotContainer.getDrivetrain().setPowerTakeoffExtended(false))
-        );
+                }, new InstantCommand(() -> RobotContainer.getDrivetrain().setPowerTakeoffExtended(false)));
+    }
+
+    @Override
+    public void end(boolean interrupted)
+    {
     }
 }

@@ -1,7 +1,9 @@
 package xyz.nasaknights.infiniterecharge.util.controllers;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import xyz.nasaknights.infiniterecharge.Constants;
+import xyz.nasaknights.infiniterecharge.RobotContainer;
 import xyz.nasaknights.infiniterecharge.commands.climb.ExtendClimbArmCommand;
 import xyz.nasaknights.infiniterecharge.commands.climb.RetractClimbArmCommand;
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.DriveCommand;
@@ -9,6 +11,8 @@ import xyz.nasaknights.infiniterecharge.commands.drivetrain.DrivetrainShiftComma
 import xyz.nasaknights.infiniterecharge.commands.drivetrain.VisionDriveAssistCommand;
 import xyz.nasaknights.infiniterecharge.commands.shooter.ShootCommand;
 
+import static xyz.nasaknights.infiniterecharge.subsystems.ShooterSubsystem.ShooterPosition.*;
+import static xyz.nasaknights.infiniterecharge.util.controllers.PS4ControllerMappings.*;
 
 public class ControllerRegistry
 {
@@ -27,32 +31,39 @@ public class ControllerRegistry
 
         // TODO Add button init here
 
-        new JoystickButton(driver, PS4ControllerMappings.SQUARE.getID()).whileHeld(new DrivetrainShiftCommand());
+        new JoystickButton(driver, SQUARE.getID()).whileHeld(new DrivetrainShiftCommand());
 
-        new JoystickButton(driver, PS4ControllerMappings.X.getID()).whileHeld(new VisionDriveAssistCommand());
+        new JoystickButton(driver, 1).whenPressed(new VisionDriveAssistCommand()).whenReleased(new InstantCommand(() ->
+        {
+            System.out.println("Ending Vision Drive");
+            RobotContainer.getVisionClient().setButtonPressed(false);
+            new DriveCommand().schedule();
+            RobotContainer.getVisionClient().setLightOn(false);
+        }));
 
-//        new JoystickButton(driver, PS4ControllerMappings.RIGHT_BUMPER.getID()).whenPressed(new InstantCommand(() -> RobotContainer.getDrivetrain().setDrivetrainNeutral(false)));
-//        new JoystickButton(driver, PS4ControllerMappings.LEFT_BUMPER.getID()).whenPressed(new InstantCommand(() -> RobotContainer.getDrivetrain().setDrivetrainNeutral(true)));
-//
-//        new JoystickButton(driver, PS4ControllerMappings.SHARE.getID()).whenPressed(new InstantCommand(() -> RobotContainer.getDrivetrain().setPowerTakeoffExtended(true)));
-//        new JoystickButton(driver, PS4ControllerMappings.OPTIONS.getID()).whenPressed(new InstantCommand(() -> RobotContainer.getDrivetrain().setPowerTakeoffExtended(false)));
+        //        new JoystickButton(driver, RIGHT_BUMPER.getID()).whenPressed(new InstantCommand(() -> getDrivetrain().setDrivetrainNeutral(false)));
+        //        new JoystickButton(driver, LEFT_BUMPER.getID()).whenPressed(new InstantCommand(() -> getDrivetrain().setDrivetrainNeutral(true)));
+        //
+        //        new JoystickButton(driver, SHARE.getID()).whenPressed(new InstantCommand(() -> getDrivetrain().setPowerTakeoffExtended(true)));
+        //        new JoystickButton(driver, OPTIONS.getID()).whenPressed(new InstantCommand(() -> getDrivetrain().setPowerTakeoffExtended(false)));
     }
 
     public static void setupOperatorJoystick(int port, DriverProfile profile)
     {
-        operator = new NKJoystick(port, DriverProfile.DEFAULT);
+        operator = new NKJoystick(port, profile);
 
         // TODO Add button init here
 
-        //        new JoystickButton(operator, PS4ControllerMappings.LEFT_BUMPER.getID()).whileHeld(new IntakeCommand(1));
-        //        new JoystickButton(operator, PS4ControllerMappings.RIGHT_BUMPER.getID()).whileHeld(new ShootCommand(), true);
+        //        new JoystickButton(operator, LEFT_BUMPER.getID()).whileHeld(new IntakeCommand(1));
+        //        new JoystickButton(operator, RIGHT_BUMPER.getID()).whileHeld(new ShootCommand(), true);
 
-        new JoystickButton(operator, PS4ControllerMappings.TRIANGLE.getID()).whileHeld(new ShootCommand(false));
-        new JoystickButton(operator, PS4ControllerMappings.CIRCLE.getID()).whileHeld(new ShootCommand(true));
+        new JoystickButton(operator, TRIANGLE.getID()).whileHeld(new ShootCommand(WALL_SHOT)); // WALL_SHOT
+        new JoystickButton(operator, CIRCLE.getID()).whileHeld(new ShootCommand(AUTO_LINE_SHOT)); // AUTO_SHOT
+        new JoystickButton(operator, X.getID()).whileHeld(new ShootCommand(TRENCH_SHOT));
 
-        new JoystickButton(operator, PS4ControllerMappings.OPTIONS.getID()).whenPressed(new ExtendClimbArmCommand().andThen(new DriveCommand()));
-        new JoystickButton(operator, PS4ControllerMappings.SHARE.getID()).whileHeld(new RetractClimbArmCommand(true).andThen(new DriveCommand()));
-        new JoystickButton(operator, PS4ControllerMappings.LEFT_BUMPER.getID()).whileHeld(new RetractClimbArmCommand(false).andThen(new DriveCommand()));
+        new JoystickButton(operator, OPTIONS.getID()).whenPressed(new ExtendClimbArmCommand().andThen(new DriveCommand()));
+        new JoystickButton(operator, SHARE.getID()).whileHeld(new RetractClimbArmCommand(true).andThen(new DriveCommand()));
+        new JoystickButton(operator, LEFT_BUMPER.getID()).whileHeld(new RetractClimbArmCommand(false).andThen(new DriveCommand()));
     }
 
     public static double getRawAxis(ControllerAssignment controller, int axisID)
@@ -62,12 +73,12 @@ public class ControllerRegistry
 
     public static boolean isOperatorLeftBumperPressed()
     {
-        return operator.getRawButton(PS4ControllerMappings.LEFT_BUMPER.getID());
+        return operator.getRawButton(LEFT_BUMPER.getID());
     }
 
     public static boolean isOperatorSharePressed()
     {
-        return operator.getRawButton(PS4ControllerMappings.SHARE.getID());
+        return operator.getRawButton(SHARE.getID());
     }
 
     public static boolean doesDriverWantSquaredInputs()

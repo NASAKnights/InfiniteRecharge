@@ -13,15 +13,22 @@ public class VisionClient extends Thread
     private Socket visionSocket;
     private BufferedReader serverReader;
     private DataOutputStream serverWriter;
+
     private byte NUMBER_OF_VALUES = 9;
     private double[] dataArray;
 
     private String data;
 
-    private boolean buttonPressed = false;
+    /**
+     * The boolean that will change based on the whether or not
+     * the command is running and tells the Raspberry Pi to start
+     * the PID.
+     */
+    private volatile boolean buttonPressed = false;
 
-    // update as these are subject to change, TODO Get finalized data format before final commit
-    private double angle, throttle, turn;
+    private double angle, throttle, turn, distance;
+
+    private long receivedDataCount = 0;
 
     private Spark light;
 
@@ -32,7 +39,7 @@ public class VisionClient extends Thread
             visionSocket = new Socket(ipAddr, port);
         } catch (Exception e)
         {
-            throw new VisionClientInitializationException("Location: Socket");
+            throw new VisionClientInitializationException("Socket");
         }
 
         try
@@ -40,7 +47,7 @@ public class VisionClient extends Thread
             serverReader = new BufferedReader(new InputStreamReader(visionSocket.getInputStream()));
         } catch (Exception e)
         {
-            throw new VisionClientInitializationException("Location: Input Reader");
+            throw new VisionClientInitializationException("Input Reader");
         }
 
         try
@@ -48,7 +55,7 @@ public class VisionClient extends Thread
             serverWriter = new DataOutputStream(visionSocket.getOutputStream());
         } catch (Exception e)
         {
-            throw new VisionClientInitializationException("Location: Output stream.");
+            throw new VisionClientInitializationException("Output Stream");
         }
 
         light = new Spark(Constants.VISION_CLIENT_LIGHT_SOURCE);
@@ -58,9 +65,12 @@ public class VisionClient extends Thread
     {
         try
         {
-            // verify what needs to be written to the vision server
-            serverWriter.writeChars(((buttonPressed) ? 1 : 0) + "\n");
+            serverWriter.writeByte((buttonPressed ? 1 : 0));
             String data = serverReader.readLine();
+            if (data != null)
+            {
+                receivedDataCount++;
+            }
             parseData(data);
         } catch (Exception e)
         {
@@ -71,28 +81,37 @@ public class VisionClient extends Thread
     private void parseData(String unparsed)
     {
         this.data = unparsed;
-        String data = unparsed;
-        double[] values = new double[NUMBER_OF_VALUES];
+        //        String data = unparsed;
+        //        double[] values = new double[NUMBER_OF_VALUES];
 
         // loop that encompasses the expected number of
+        //        for (int i = 0; i < NUMBER_OF_VALUES; i++)
+        //        {
+        //            if (data.contains(","))
+        //            {
+        //                values[i] = Double.parseDouble(data.substring(0, data.indexOf(",") - 1).trim());
+        //                data = data.substring(data.indexOf(",") + 1);
+        //            } else
+        //            {
+        //                values[i] = Double.parseDouble(data);
+        //            }
+        //        }
+
+        String[] stringArray = unparsed.split(",");
+        double[] dataArray = new double[NUMBER_OF_VALUES];
         for (int i = 0; i < NUMBER_OF_VALUES; i++)
         {
-            if (data.contains(","))
-            {
-                values[i] = Double.parseDouble(data.substring(0, data.indexOf(",") - 1).trim());
-                data = data.substring(data.indexOf(",") + 1);
-            } else
-            {
-                values[i] = Double.parseDouble(data);
-            }
+            dataArray[i] = Double.parseDouble(stringArray[i].trim());
         }
-        dataArray = values;
+
+        this.dataArray = dataArray;
         // these values are very subject to change
         // x (0), z (1), dist (2), angle (3), angle2 (4),
         // OffSetx (5), speed (6), turn (7), gyro (8)
-        angle = values[4];
-        throttle = values[6];
-        turn = values[7];
+        distance = this.dataArray[2];
+        angle = this.dataArray[4];
+        throttle = this.dataArray[6];
+        turn = this.dataArray[7];
     }
 
     public void setButtonPressed(boolean pressed)
@@ -107,7 +126,12 @@ public class VisionClient extends Thread
 
     public void setLightOn(boolean on)
     {
-        light.set(on ? -1 : 0);
+        light.set(on ? 1 : 0);
+    }
+
+    public double getDistance()
+    {
+        return distance;
     }
 
     public double getAngle()
@@ -135,15 +159,20 @@ public class VisionClient extends Thread
         return data;
     }
 
+    public long getReceivedDataCount()
+    {
+        return receivedDataCount;
+    }
+
     /**
      * This class has been implemented for better testing and calibration purposes only and
      * should be removed once vision client is fully operational due to its over-complex nature.
      */
     public static class VisionClientInitializationException extends Exception
     {
-        public VisionClientInitializationException(String message)
+        public VisionClientInitializationException(String location)
         {
-            super("Failed to initialize the Vision Client.\n" + message);
+            super("Failed to initialize the Vision Client.\nLocation: " + location);
         }
     }
 }

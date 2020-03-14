@@ -2,14 +2,18 @@ package xyz.nasaknights.infiniterecharge.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import xyz.nasaknights.infiniterecharge.RobotContainer;
+import xyz.nasaknights.infiniterecharge.subsystems.ShooterSubsystem.ShooterPosition;
+import xyz.nasaknights.infiniterecharge.util.lighting.IndicatorLightUtil;
 
 import java.util.concurrent.TimeUnit;
 
 public class ShootCommand extends CommandBase
 {
+    private ShooterPosition position;
+
     private boolean far;
     private long totalTime;
-//    private boolean hasReachedTarget = false;
+    private boolean hasReachedTarget = false;
 
     public ShootCommand(boolean far)
     {
@@ -17,29 +21,51 @@ public class ShootCommand extends CommandBase
         addRequirements(RobotContainer.getShooterSubsystem());
     }
 
+    public ShootCommand(ShooterPosition position)
+    {
+        this.position = position;
+    }
+
     @Override
     public void initialize()
     {
-//        RobotContainer.getShooterSubsystem().setHoodExtended(false);
+
+        //        RobotContainer.getShooterSubsystem().setHoodExtended(false);
         totalTime = System.currentTimeMillis();
 
-        if (far)
-        {
-            RobotContainer.getShooterSubsystem().setHoodExtended(true);
-        }
+        //        if (far)
+        //        {
+        //            RobotContainer.getShooterSubsystem().setHoodExtended(true);
+        //        }
+
+        RobotContainer.getShooterSubsystem().setHoodExtended(position.shouldHoodExtend());
+        RobotContainer.getShooterSubsystem().setTargetShooterRPM(position.getTargetRPM());
     }
 
     @Override
     public void execute()
     {
-//        RobotContainer.getShooterSubsystem().setTargetShooterRPM(far ? 16000 : 14000);
-        RobotContainer.getShooterSubsystem().set(far ? .87 : .77);
-//        if (RobotContainer.getShooterSubsystem().isShooterUpToSpeed() && !hasReachedTarget)
-//        {
-//            totalTime = System.currentTimeMillis() - totalTime;
-//            hasReachedTarget = true;
-//            System.out.println("Reached target in " + totalTime + " ms");
-//        }
+        //        RobotContainer.getShooterSubsystem().setTargetShooterRPM(far ? 16000 : 14000);
+        //        RobotContainer.getShooterSubsystem().set(far ? .87 : .77);
+
+        //////////////////////////////////////////////////////////////////////
+        //                                                                  //
+        //                Multi-position Hood shooting stuff                //
+        //                                                                  //
+        //////////////////////////////////////////////////////////////////////
+
+        // TODO Uncomment these for testing
+        //        RobotContainer.getShooterSubsystem().set(position.getPower());
+        //        RobotContainer.getShooterSubsystem().setTargetShooterRPM(position.getTargetRPM());
+
+        RobotContainer.getShooterSubsystem().goToTargetRPM();
+
+        if (RobotContainer.getShooterSubsystem().isShooterUpToSpeed() && !hasReachedTarget)
+        {
+            totalTime = System.currentTimeMillis() - totalTime;
+            hasReachedTarget = true;
+            System.out.println("Reached target in " + totalTime + " ms");
+        }
 
         // Temporary fix due to disablement of right shooter motor due to mechanical malfunction
         if (System.currentTimeMillis() >= totalTime + TimeUnit.SECONDS.toMillis(1))
@@ -56,6 +82,7 @@ public class ShootCommand extends CommandBase
         RobotContainer.getQueuerSubsystem().setQueuerIntakePower(0);
         RobotContainer.getShooterSubsystem().set(0);
         RobotContainer.getShooterSubsystem().setHoodExtended(false);
+
     }
 
     @Override
